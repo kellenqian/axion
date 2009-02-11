@@ -46,7 +46,20 @@ function P($mix_target,$bool_isBreakPoint = false){
 	}
 }
 
-function load($str_fileName,$str_suffix = '.class.php'){
-	require_once $str_fileName.$str_suffix;
+function daddslashes($string, $force = 0) {
+	if(!defined('MAGIC_QUOTES_GPC')){
+		define('MAGIC_QUOTES_GPC', get_magic_quotes_gpc());
+	}
+	
+	if(!MAGIC_QUOTES_GPC || $force) {
+		if(is_array($string)) {
+			foreach($string as $key => $val) {
+				$string[$key] = daddslashes($val, $force);
+			}
+		} else {
+			$string = addslashes($string);
+		}
+	}
+	return $string;
 }
 ?>
