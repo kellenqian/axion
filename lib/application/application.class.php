@@ -1,9 +1,9 @@
 <?php
-class Application extends Base {
+class Application extends Base  {
 	public function __construct() {
+		parent::__construct();
 		$this->initialize ();
 		$this->run;
-		p(number_format(microtime(true) - $_ENV['AXION_START_TIME'],10));
 	}
 	
 	public function initialize() {
@@ -14,16 +14,22 @@ class Application extends Base {
 		$_POST = daddslashes ( $_POST );
 		
 		/**
-		 * 设置项目自动加载目录
-		 */
-		$currentIncludePath = get_include_path ();
-		$appIncludePath = APP_MODEL_PATH . DS . PATH_SEPARATOR . APP_DISPATCHER_PATH . DS . PATH_SEPARATOR;
-		set_include_path ( $appIncludePath . $currentIncludePath );
-		
-		/**
 		 * 注册自动加载函数
 		 */
 		spl_autoload_register ( array ($this, 'appAutoload' ) );
+		
+		$_config = require_once AXION_PATH . DS . 'common/default.php';
+		
+		$this->set();
+		
+		p($this);
+		
+		require_once 'dispatcher/dispatcher.class.php';
+		
+		$dispatcher = new Dispatcher();
+		
+		$dispatcher->dispatch();
+		
 	}
 	
 	public function run() {

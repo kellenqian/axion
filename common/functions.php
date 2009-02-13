@@ -15,7 +15,7 @@
  */
 function P($mix_target,$bool_isBreakPoint = false){
 	if($_ENV['DEBUG_LEVEL'] < 1) {
-		return false;
+		//return false;
 	}
 	static $_pcount;
 	$lable = ++ $_pcount;
