@@ -13,8 +13,8 @@ class Axion {
 	public static $load_cache_file;
 	
 	private static function initialize() {
-		if (substr ( PHP_VERSION, 0, 1 ) != 5)
-			exit ( 'Axion FrameWork Is Not Compatible With PHP4' );
+		if (substr ( PHP_VERSION, 0, 3 ) < 5.2)
+			exit ( 'Axion Framework Requires PHP Version 5.2.x' );
 		
 		/**
 		 * 记录程序开始执行的时间点
@@ -33,7 +33,7 @@ class Axion {
 		define ( 'TIME', time () );
 		
 		/**
-		 * 定义当前操作系统类型
+		 * 定义当前操作系统类型(估计没人会用除了这两种以外的系统吧)
 		 */
 		define ( 'OS', DS == '\\' ? 'windows' : 'linux' );
 		
@@ -41,6 +41,11 @@ class Axion {
 		 * 定义当前PHP是否运行于CLI模式下的标志
 		 */
 		define ( 'IS_CLI', PHP_SAPI == 'cli' ? true : false );
+		
+		/**
+		 * 定义框架默认使用的临时目录路径
+		 */
+		define('TEMP_PATH',OS == 'windows' ? getenv('TEMP') : '/tmp');
 		
 		/**
 		 * 定义当前AXION所在路径
