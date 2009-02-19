@@ -8,18 +8,26 @@ abstract class Base {
 	protected $version = '0.01';
 	
 	/**
-	 * 配置信息对象
+	 * 各组件配置信息对象
 	 *
 	 * @var config
 	 */
 	protected $config;
 	
+	/**
+	 * 全局配置信息
+	 *
+	 * @var array
+	 */
+	static $_globalConfig = array();
+	
 	public function __construct(){
 		$this->config = new Config;
+		$this->config->set(self::$_globalConfig);
 	}
 	
-	public function set($c = array(1)){
-		$this->config->set($c);
+	static function set()){
+		
 	}
 	
 	

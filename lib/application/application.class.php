@@ -1,5 +1,5 @@
 <?php
-class Application extends Base  {
+class Axion_Application extends Base  {
 	public function __construct() {
 		parent::__construct();
 		$this->initialize ();
@@ -16,20 +16,9 @@ class Application extends Base  {
 		/**
 		 * 注册自动加载函数
 		 */
-		spl_autoload_register ( array ($this, 'appAutoload' ) );
+		spl_autoload_register ( array ('Application', 'appAutoload' ) );
 		
 		$_config = require_once AXION_PATH . DS . 'common/default.php';
-		
-		$this->set();
-		
-		p($this);
-		
-		require_once 'dispatcher/dispatcher.class.php';
-		
-		$dispatcher = new Dispatcher();
-		
-		$dispatcher->dispatch();
-		
 	}
 	
 	public function run() {

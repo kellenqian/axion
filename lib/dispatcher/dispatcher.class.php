@@ -2,7 +2,7 @@
 Class Dispatcher extends Base implements DispatcherInterface
 {
 	public function dispatch(){
-		p($this);
+		//p($this);
 	}
 	
 	public function setOption($arr_option = array()){
