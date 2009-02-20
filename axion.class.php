@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * 注册框架自动加载函数
+ */
+spl_autoload_register ( array ('Axion', 'autoloadClass' ) );
+
 class Axion {
 	/**
 	 * Axion框架初始化文件
@@ -9,10 +15,10 @@ class Axion {
 	public static $AXION_LOADED_FILE_TIME;
 	
 	public static $new_class_found = false;
-	public static $loaded_class = array();
+	public static $loaded_class = array ();
 	public static $load_cache_file;
 	
-	private static function initialize() {
+	public function __construct() {
 		if (substr ( PHP_VERSION, 0, 3 ) < 5.2)
 			exit ( 'Axion Framework Requires PHP Version 5.2.x' );
 		
@@ -45,7 +51,7 @@ class Axion {
 		/**
 		 * 定义框架默认使用的临时目录路径
 		 */
-		define('TEMP_PATH',OS == 'windows' ? getenv('TEMP') : '/tmp');
+		define ( 'TEMP_PATH', OS == 'windows' ? getenv ( 'TEMP' ) : '/tmp' );
 		
 		/**
 		 * 定义当前AXION所在路径
@@ -69,12 +75,12 @@ class Axion {
 		
 		//框架目录常量
 		define ( 'AXION_LIB_PATH', AXION_PATH . DS . 'lib' ); //AXION框架代码库目录
-		define ( 'AXION_KERNEL_PATH', AXION_LIB_PATH . DS . 'kernel' ); //AXION框架内核代码目录
 		
+
 		/**
 		 * 设置框架includePath
 		 */
-		self::addIncludePath(AXION_KERNEL_PATH);
+		self::addIncludePath ( AXION_LIB_PATH );
 		
 		/**
 		 * 加载AXION基础函数库
@@ -90,6 +96,16 @@ class Axion {
 		 * 记录框架初始化完成时间 
 		 */
 		self::$AXION_LOADED_FILE_TIME = microtime ( true );
+	}
+	
+	/**
+	 * 应用程序启动入口方法
+	 *
+	 */
+	public function Run() {
+		$application = new AXION_APPLICATION();
+		AXION_CONFIG::init();
+		AXION_CONFIG::loadConfigFile(AXION_PATH.DS.'common'.DS.'t.ini');
 	}
 	
 	/**
@@ -110,29 +126,28 @@ class Axion {
 	/**
 	 * 自动加载类方法
 	 *
-	 * @param string $className 类名
+	 * @param string $package_name 类名
 	 */
-	public static function autoloadClass($className) {
-		echo $className;
+	public static function autoloadClass($package_name) {
+		/*@todo 需要完成二次启动自动加载相应文件的功能 */
+		$package_array = split ( '_', $package_name );
+		$file_array [] = strtolower ( join ( DS, $package_array ) );
+		array_push ( $package_array, array_pop ( $package_array ) . '.class' );
+		$file_array [] = strtolower ( join ( DS, $package_array ) );
+		
+		$path_array = explode ( PATH_SEPARATOR, get_include_path () );
+		
+		foreach ( $path_array as $path ) {
+			foreach ( $file_array as $file ) {
+				$fullPath = trim ( $path, DS ) . DS . $file . '.php';
+				if (file_exists ( $fullPath )) {
+					require_once $fullPath;
+					self::$loaded_class [$package_name] = $fullPath;
+					self::$new_class_found = true;
+					return true;
+				}
+			}
+		}
 	}
-	
-	public function Run() {
-		self::initialize ();
-	}
-}
-
-/**
- * 框架启动函数
- *
- */
-	
-function run() {
-	/**
-	 * 注册框架自动加载函数
-	 */
-	spl_autoload_register ( array('Axion', 'autoloadClass') );
-
-	$axion = new Axion ( );
-	$axion->Run ();
 }
 ?>
