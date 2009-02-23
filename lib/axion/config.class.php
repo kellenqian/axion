@@ -1,33 +1,115 @@
 <?php
-Class AXION_CONFIG{
-	private static $container = array();
+class AXION_CONFIG {
+	private static $container;
+	private static $locked = array ();
 	
-	public static function setEntry($key , $value){
-		self::$container[$key] = $value;	
-	}
-	
-	public static function init(){
-		if(true == file_exists($iniFile = AXION_PATH.DS.'common'.DS.'config.ini')){
-			$axionConfig = parse_ini_file($iniFile,true);
-			
-			$axionConfig = array_change_key_case(array_map('array_change_key_case',$axionConfig));
-			
-			self::setEntry('default' , $axionConfig);
+	private static function buildEvalCommand($package) {
+		$packageTolower = strtolower ( $package );
+		
+		$hashKey = null;
+		
+		if (strpos ( $package, '.' )) {
+			$packageArray = explode ( '.', $packageTolower );
+			foreach ( $packageArray as $v ) {
+				$hashKey .= "['$v']";
+			}
+		} else {
+			$hashKey = "['$package']";
 		}
+		
+		$run = '$configPointer = & self::$container' . $hashKey . ';';
+		
+		return $run;
 	}
 	
-	public static function loadConfigFile($configFile){
-		if(!file_exists($configFile)){
+	public static function lock($package) {
+		self::$locked [$package] = true;
+	}
+	
+	public static function islock($package) {
+		$packageTolower = strtolower ( $package );
+		$hashKey = null;
+		$hashKeyArray = array();
+		if (strpos ( $package, '.' )) {
+			$packageArray = explode ( '.', $packageTolower );
+			foreach ( $packageArray as $v ) {
+				$hashKeyArray[] = $v;
+				$hashKey = join('.',$hashKeyArray);
+				if (self::$locked [$hashKey]) {
+					return true;
+				}
+			}
+		} else {
+			if (self::$locked [$package]) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static function set($package, $value, $lock = false) {
+		if (self::islock ( $package )) {
 			return false;
 		}
 		
-		$newConfigArray = parse_ini_file($configFile,true);
+		if (is_array ( $value )) {
+			$value = array_change_key_case_recursive ( $value );
+		}
 		
-		$newConfig = array_change_key_case(array_map('array_change_key_case',$newConfigArray));
+		$run = self::buildEvalCommand ( $package );
 		
-		self::setEntry('user_defined',$newConfig);
+		if (! $run) {
+			return false;
+		}
 		
-		return true;
+		eval ( $run );
+	
+		$configPointer = $value;
+		
+		/***/
+		$arr = explode('.',$package);
+		
+		static $_arr;
+		$p = & $_arr;
+		foreach ($arr as $v){
+			$p = &$p[$v]; 
+		}
+		$p = $value;
+		p($_arr);
+		/***/
+		
+		if ($lock) {
+			self::lock ( $package );
+		}
+		
+		return $configPointer;
+	}
+	
+	public static function get($package = '') {
+		if (empty ( $package )) {
+			return self::$container;
+		}
+		
+		$run = self::buildEvalCommand ( $package );
+		
+		if (! $run) {
+			return false;
+		}
+		
+		eval ( $run );
+		
+		return $configPointer;
+	}
+	
+	public static function loadConfigFile($configFile, $package = 'axion' , $lock = false) {
+		if (! file_exists ( $configFile )) {
+			return false;
+		}
+		
+		$newConfigArray = parse_ini_file ( $configFile, true );
+		
+		return self::set ( $package, $newConfigArray ,$lock);
 	}
 }
 ?>
