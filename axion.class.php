@@ -9,8 +9,11 @@ class Axion {
 	/**
 	 * Axion框架初始化文件
 	 * @author kellenqian
+	 * @package AXION
 	 * @copyright techua.com
 	 */
+	
+	
 	public static $AXION_START_TIME;
 	public static $AXION_LOADED_FILE_TIME;
 	
@@ -18,7 +21,14 @@ class Axion {
 	public static $loaded_class = array ();
 	public static $load_cache_file;
 	
+	/**
+	 * 框架初始化函数
+	 *
+	 */
 	public function __construct() {
+		/**
+		 * 检测PHP版本，必须高于5.2.0
+		 */
 		if (substr ( PHP_VERSION, 0, 3 ) < 5.2)
 			exit ( 'Axion Framework Requires PHP Version 5.2.x' );
 		
@@ -65,7 +75,7 @@ class Axion {
 		 */
 		if (! defined ( 'APPLICATION_PATH' )) {
 			exit ( 'Please DEFINE "APPLICATION_PATH"' );
-		} elseif (false !== strpos ( APPLICATION_PATH, '.' )) {
+		} elseif (false == is_dir( APPLICATION_PATH)) {
 			exit ( '"APPLICATION_PATH" is Illegal' );
 		}
 		
@@ -104,8 +114,6 @@ class Axion {
 	 */
 	public function Run() {
 		$application = new AXION_APPLICATION();
-		AXION_CONFIG::init();
-		AXION_CONFIG::loadConfigFile(AXION_PATH.DS.'common'.DS.'t.ini');
 	}
 	
 	/**
