@@ -112,7 +112,7 @@ class AXION_CONFIG {
 		}
 		
 		if (is_array ( $value )) {
-			//$value = array_change_key_case_recursive ( $value );
+			$value = array_change_key_case_recursive ( $value );
 		}
 		
 		$currentConfig = self::register ( $package, $value );
