@@ -1,6 +1,13 @@
 <?php
 class AXION_APPLICATION {
+	private $uniqueId;
+	
 	public function __construct() {
+		/**
+		 * 计算应用程序的唯一ID
+		 */
+		$this->uniqueId = md5 ( APPLICATION_PATH );
+		
 		/**
 		 * 加载应用程序配置文件
 		 */
@@ -12,7 +19,7 @@ class AXION_APPLICATION {
 		/**
 		 * 注册默认错误处理函数
 		 */
-		$debugLevel = AXION_CONFIG::get ( 'axion.debug.level' );
+		$debugLevel = AXION_CONFIG::GET ( 'axion.debug.level' );
 		switch ($debugLevel) {
 			case 1 :
 				$level = E_ALL;
@@ -37,13 +44,51 @@ class AXION_APPLICATION {
 		set_exception_handler ( array ($this, 'exceptionHandler' ) );
 		
 		/**
+		 * 定义应用程序程序所需的临时文件目录常量
+		 */
+		define ( 'DATA_CACHE_PATH', TEMP_PATH . DS . $this->uniqueId . DS . 'datacache' );
+		define ( 'DB_CACHE_PATH', TEMP_PATH . DS . $this->uniqueId . DS . 'dbcache' );
+		define ( 'VIEW_CACHE_PATH', TEMP_PATH . DS . $this->uniqueId . DS . 'viewcache' );
+		define ( 'CODE_CACHE_PATH', TEMP_PATH . DS . $this->uniqueId . DS . 'codecache' );
+		
+		/**
+		 * 创建应用程序所需的临时文件目录
+		 */
+		$tmpDirs = array ('data_cache' => DATA_CACHE_PATH, 'db_cache' => DB_CACHE_PATH, 'view_cache' => VIEW_CACHE_PATH, 'code_cache' => CODE_CACHE_PATH );
+		
+		foreach ( $tmpDirs as $v ) {
+			if (! is_dir ( $v )) {
+				AXION_UTIL_FILE::mkdir ( $v, 0755 );
+			}
+		}
+		
+		/**
 		 * 设置时区
 		 */
 		date_default_timezone_set ( AXION_CONFIG::get ( 'axion.misc.timezone' ) );
 	}
 	
-	public function run(){
+	public function run() {
+		$dispatcherClass = AXION_CONFIG::GET ( 'axion.dispatcher.class' );
 		
+		$dispatcher = new $dispatcherClass ( );
+		
+		if (! ($dispatcher instanceof AXION_INTERFACE_DISPATCHER)) {
+			throw new AXION_EXCEPTION ( '无效的调度器对象', E_ERROR );
+		}
+		
+		$controller = $dispatcher->getController();
+		$action		= $dispatcher->getAction();
+		$params		= $dispatcher->getParams();
+	}
+	
+	/**
+	 * 获取当前应用程序的唯一ID
+	 *
+	 * @return string
+	 */
+	public static function getUniqueId() {
+		return $this->uniqueId;
 	}
 	
 	/**
@@ -56,7 +101,7 @@ class AXION_APPLICATION {
 	 * @param array $errcontext
 	 */
 	public function errorHandler($errno, $errstr, $errfile, $errline, $errcontext) {
-		
+	
 	}
 	
 	/**

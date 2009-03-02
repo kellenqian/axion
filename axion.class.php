@@ -16,11 +16,42 @@ spl_autoload_register ( array ('Axion', 'autoloadClass' ) );
  *
  */
 class Axion {
+	/**
+	 * 框架开始执行时间
+	 *
+	 * @var float
+	 */
 	public static $AXION_START_TIME;
-	public static $AXION_LOADED_FILE_TIME;
+	/**
+	 * 框架初始化完成时间
+	 *
+	 * @var float
+	 */
+	public static $AXION_INIT_TIME;
+	/**
+	 * 框架执行程序完成时间
+	 *
+	 * @var float
+	 */
+	public static $AXION_RUN_TIME;
 	
+	/**
+	 * 是否发现新的加载文件
+	 *
+	 * @var bool
+	 */
 	public static $new_class_found = false;
+	/**
+	 * 已经载入的类
+	 *
+	 * @var array
+	 */
 	public static $loaded_class = array ();
+	/**
+	 * 是否载入了缓存文件
+	 *
+	 * @var unknown_type
+	 */
 	public static $load_cache_file;
 	
 	/**
@@ -61,6 +92,31 @@ class Axion {
 		define ( 'IS_CLI', PHP_SAPI == 'cli' ? true : false );
 		
 		/**
+		 * 判断是否可以使用共享内存
+		 */
+		$isSHM = false;
+		if (OS == 'linux') {
+			/** 如果共享内存可写则使用内存作为临时目录存储空间 **/
+			if (is_writable ( '/dev/shm' )) {
+				$appTmpPath = '/dev/shm';
+				$isSHM = true;
+			} else {
+				$appTmpPath = '/tmp';
+				$isSHM = true;
+			}
+		}
+		
+		/**
+		 * 定义是否使用了共享内存
+		 */
+		define ( 'IS_SHM', $isSHM ? true : false );
+		
+		/**
+		 * 定义框架默认使用的临时目录路径
+		 */
+		define ( 'TEMP_PATH', OS == 'windows' ? getenv ( 'TEMP' ) : $appTmpPath );
+		
+		/**
 		 * 定义当前AXION所在路径
 		 */
 		if (! defined ( 'AXION_PATH' )) {
@@ -72,21 +128,9 @@ class Axion {
 		 */
 		if (! defined ( 'APPLICATION_PATH' )) {
 			exit ( 'Please DEFINE "APPLICATION_PATH"' );
-		} elseif (!( APPLICATION_PATH )) {
+		} elseif (! (APPLICATION_PATH)) {
 			exit ( '"APPLICATION_PATH" is Illegal' );
 		}
-		
-		/**
-		 * 定义框架默认使用的临时目录路径
-		 */
-		if (OS == 'linux') {
-			if (is_writable ( '/dev/shm' )) {
-				$appTmpPathHash = substr(md5(APPLICATION_PATH),8,16);
-				$appTmpPath = '/dev/shm/'.$appTmpPathHash;
-				mkdir($appTmpPath);
-			}
-		}
-		define ( 'TEMP_PATH', OS == 'windows' ? getenv ( 'TEMP' ) : $appTmpPath );
 		
 		/**
 		 * 定义AXION必要的常量
@@ -107,6 +151,12 @@ class Axion {
 		require AXION_PATH . DS . 'common/functions.php';
 		
 		/**
+		 * 加载AXION启动所必须的类
+		 */
+		require AXION_PATH . DS . 'lib' . DS . 'axion' . DS .'config.class.php';
+		require AXION_PATH . DS . 'lib' . DS . 'axion' . DS .'application.class.php';
+		
+		/**
 		 * 加载AXION框架默认配置文件
 		 */
 		AXION_CONFIG::loadConfigFile ( AXION_PATH . DS . 'common' . DS . 'config.xml' );
@@ -114,7 +164,7 @@ class Axion {
 		/**
 		 * 记录框架初始化完成时间 
 		 */
-		self::$AXION_LOADED_FILE_TIME = microtime ( true );
+		self::$AXION_INIT_TIME = microtime ( true );
 	}
 	
 	/**
@@ -124,6 +174,14 @@ class Axion {
 	public function Run() {
 		$app = new AXION_APPLICATION ( );
 		$app->run ();
+	}
+	
+	/**
+	 * 载入可以缓存加载的文件
+	 *
+	 */
+	public static function loadCachedClass(){
+		
 	}
 	
 	/**
@@ -162,10 +220,17 @@ class Axion {
 					require_once $fullPath;
 					self::$loaded_class [$package_name] = $fullPath;
 					self::$new_class_found = true;
-					return true;
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 框架析构函数
+	 *
+	 */
+	public function __destruct(){
+		self::$AXION_RUN_TIME = microtime(true);
 	}
 }
 

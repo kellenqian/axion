@@ -3,12 +3,26 @@
 	<debug> 
   		<level>1</level>
 	</debug>
-	<session>
-	</session>
 	<db>
+		<driver>mysql</driver>
+		<port>3306</port>
 	</db>
+	<dispatcher>
+		<class>AXION_DISPATCHER</class>
+	</dispatcher>
+	<controller>
+	</controller>
+	<model>
+	</model>
+	<view>
+		<compress>gzip</compress>
+		<striphtml>0</striphtml>
+	</view>
+	<session>
+		<handler>file</handler>
+		<hashkey>axionFramwork</hashkey>
+	</session>
 	<misc>
 		<timezone>asia/shanghai</timezone>
 	</misc>
 </axion>
-
