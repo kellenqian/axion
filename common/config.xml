@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<axion>
+	<debug> 
+  		<level>1</level>
+	</debug>
+	<session>
+	</session>
+	<db>
+	</db>
+	<misc>
+		<timezone>asia/shanghai</timezone>
+	</misc>
+</axion>
+

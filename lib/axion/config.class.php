@@ -108,7 +108,7 @@ class AXION_CONFIG {
 	 */
 	public static function set($package, $value, $lock = false) {
 		if (self::islock ( $package )) {
-			return false;
+			throw new AXION_EXCEPTION('配置段锁定，拒绝设置',E_NOTICE);
 		}
 		
 		if (is_array ( $value )) {
@@ -135,7 +135,25 @@ class AXION_CONFIG {
 			return self::$container;
 		}
 		
-		return self::register ( $package );
+		$packageTolower = strtolower($package);
+		if(!strpos($packageTolower,'.')){
+			return self::$container[$packageTolower];
+		}
+		
+		$packageArray = explode('.',$packageTolower);
+		
+		$run = null;
+		foreach ($packageArray as $v){
+			$run[] = "['$v']";
+		}
+		
+		$run = join('',$run);
+		
+		$run = '$config = self::$container'.$run.';';
+		
+		eval($run);
+		
+		return $config ? $config : false;
 	}
 	
 	/**
@@ -148,12 +166,60 @@ class AXION_CONFIG {
 	 */
 	public static function loadConfigFile($configFile, $package = 'axion', $lock = false) {
 		if (! file_exists ( $configFile )) {
-			return false;
+			throw new AXION_EXCEPTION('找不到配置文件',E_ERROR);
 		}
 		
-		$newConfigArray = parse_ini_file ( $configFile, true );
+		$suffix = strtolower(substr($configFile , -3 , 3));
 		
+		switch ($suffix){
+			case 'ini':
+				$newConfigArray = self::loadIni($configFile);
+				break;
+			case 'xml':
+				$newConfigArray = self::loadXml($configFile);
+				break;
+			case 'php':
+				$newConfigArray = self::loadPHP($configFile);
+				break;
+			default:
+				throw new AXION_EXCEPTION('未知配置文件格式',E_NOTICE);
+				break;
+		}
 		return self::set ( $package, $newConfigArray, $lock );
+	}
+	
+	/**
+	 * 读取INI格式的配置文件
+	 *
+	 * @param string $configFile
+	 * @return array
+	 */
+	private static function loadIni($configFile){
+		return parse_ini_file($configFile,true);
+	}
+	
+	/**
+	 * 读取XML格式的配置文件
+	 *
+	 * @param string $configFile
+	 * @return array
+	 */
+	private static function loadXml($configFile){
+		$objs = simplexml_load_file($configFile);
+		$arrays = object2array($objs);
+		return $arrays;
+	}
+	
+	/**
+	 * 读取PHP格式的配置文件
+	 *
+	 * @param string $configFile
+	 * @return array
+	 */
+	private static function loadPHP($configFile){
+		/* @TODO 是否需要校验PHP格式为正确格式? */
+		$array = require_once $configFile;
+		return $array;
 	}
 }
 ?>

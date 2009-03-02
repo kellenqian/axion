@@ -5,15 +5,17 @@
  */
 spl_autoload_register ( array ('Axion', 'autoloadClass' ) );
 
+/**
+ * Axion框架核心类
+ * 
+ * 完成框架初始化工作
+ * 
+ * @package AXION
+ * @author kellenqian
+ * @copyright techua.com
+ *
+ */
 class Axion {
-	/**
-	 * Axion框架初始化文件
-	 * @author kellenqian
-	 * @package AXION
-	 * @copyright techua.com
-	 */
-	
-	
 	public static $AXION_START_TIME;
 	public static $AXION_LOADED_FILE_TIME;
 	
@@ -59,11 +61,6 @@ class Axion {
 		define ( 'IS_CLI', PHP_SAPI == 'cli' ? true : false );
 		
 		/**
-		 * 定义框架默认使用的临时目录路径
-		 */
-		define ( 'TEMP_PATH', OS == 'windows' ? getenv ( 'TEMP' ) : '/tmp' );
-		
-		/**
 		 * 定义当前AXION所在路径
 		 */
 		if (! defined ( 'AXION_PATH' )) {
@@ -75,9 +72,21 @@ class Axion {
 		 */
 		if (! defined ( 'APPLICATION_PATH' )) {
 			exit ( 'Please DEFINE "APPLICATION_PATH"' );
-		} elseif (false == is_dir( APPLICATION_PATH)) {
+		} elseif (!( APPLICATION_PATH )) {
 			exit ( '"APPLICATION_PATH" is Illegal' );
 		}
+		
+		/**
+		 * 定义框架默认使用的临时目录路径
+		 */
+		if (OS == 'linux') {
+			if (is_writable ( '/dev/shm' )) {
+				$appTmpPathHash = substr(md5(APPLICATION_PATH),8,16);
+				$appTmpPath = '/dev/shm/'.$appTmpPathHash;
+				mkdir($appTmpPath);
+			}
+		}
+		define ( 'TEMP_PATH', OS == 'windows' ? getenv ( 'TEMP' ) : $appTmpPath );
 		
 		/**
 		 * 定义AXION必要的常量
@@ -98,9 +107,9 @@ class Axion {
 		require AXION_PATH . DS . 'common/functions.php';
 		
 		/**
-		 * 设置默认时区(估计这框架暂时也出不了国)
+		 * 加载AXION框架默认配置文件
 		 */
-		date_default_timezone_set ( 'Asia/Shanghai' );
+		AXION_CONFIG::loadConfigFile ( AXION_PATH . DS . 'common' . DS . 'config.xml' );
 		
 		/**
 		 * 记录框架初始化完成时间 
@@ -113,7 +122,8 @@ class Axion {
 	 *
 	 */
 	public function Run() {
-		$application = new AXION_APPLICATION();
+		$app = new AXION_APPLICATION ( );
+		$app->run ();
 	}
 	
 	/**
@@ -158,4 +168,5 @@ class Axion {
 		}
 	}
 }
+
 ?>

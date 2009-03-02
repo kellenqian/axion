@@ -43,22 +43,35 @@ function P($mix_target, $bool_isBreakPoint = false) {
 }
 
 /**
- * 转换数组为对象
+ * 递归转换对象内公共属性为数组
  *
- * @param array $array
- * @return object
+ * @param object $object
+ * @return array
  */
-function array2obj($array) {
-	foreach ( $array as $key => $value ) {
-		if (! is_string ( $key )) {
-			return false;
-		}
-		if (is_array ( $value )) {
-			$array [$key] = array2obj ( $value );
-		}
-	}
-	return ( object ) $array;
-}
+function object2array($object) 
+{ 
+    $return = NULL; 
+       
+    if(is_array($object)) 
+    { 
+        foreach($object as $key => $value) 
+            $return[$key] = object2array($value); 
+    } 
+    else 
+    { 
+        $var = get_object_vars($object); 
+           
+        if($var) 
+        { 
+            foreach($var as $key => $value) 
+                $return[$key] = ($key && $value === '') ? NULL : object2array($value); 
+        } 
+        else return $object; 
+    } 
+
+    return $return; 
+} 
+
 
 /**
  * 递归转换数组键大小写
