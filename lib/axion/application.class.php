@@ -39,22 +39,17 @@ class AXION_APPLICATION {
 		set_error_handler ( array ($this, 'errorHandler' ), $level );
 		
 		/**
-		 * 注册默认异常处理函数
-		 */
-		set_exception_handler ( array ($this, 'exceptionHandler' ) );
-		
-		/**
 		 * 定义应用程序程序所需的临时文件目录常量
 		 */
-		define ( 'DATA_CACHE_PATH', TEMP_PATH . DS . $this->uniqueId . DS . 'datacache' );
-		define ( 'DB_CACHE_PATH', TEMP_PATH . DS . $this->uniqueId . DS . 'dbcache' );
-		define ( 'VIEW_CACHE_PATH', TEMP_PATH . DS . $this->uniqueId . DS . 'viewcache' );
-		define ( 'CODE_CACHE_PATH', TEMP_PATH . DS . $this->uniqueId . DS . 'codecache' );
+		define ( 'DATA_CACHE_PATH', TEMP_PATH . DS . 'axion_' . $this->uniqueId . DS . 'datacache' );
+		define ( 'DB_CACHE_PATH', TEMP_PATH . DS . 'axion_' . $this->uniqueId . DS . 'dbcache' );
+		define ( 'VIEW_CACHE_PATH', TEMP_PATH . DS . 'axion_' . $this->uniqueId . DS . 'viewcache' );
+		define ( 'CODE_CACHE_PATH', TEMP_PATH . DS . 'axion_' . $this->uniqueId . DS . 'codecache' );
 		
 		/**
 		 * 创建应用程序所需的临时文件目录
 		 */
-		$tmpDirs = array ('data_cache' => DATA_CACHE_PATH, 'db_cache' => DB_CACHE_PATH, 'view_cache' => VIEW_CACHE_PATH, 'code_cache' => CODE_CACHE_PATH );
+		$tmpDirs = array ('data_cache' => DATA_CACHE_PATH, 'db_cache' => DB_CACHE_PATH, 'view_cache' => VIEW_CACHE_PATH, 'code_cache' => CODE_CACHE_PATH ,);
 		
 		foreach ( $tmpDirs as $v ) {
 			if (! is_dir ( $v )) {
@@ -77,9 +72,15 @@ class AXION_APPLICATION {
 			throw new AXION_EXCEPTION ( '无效的调度器对象', E_ERROR );
 		}
 		
-		$controller = $dispatcher->getController();
-		$action		= $dispatcher->getAction();
-		$params		= $dispatcher->getParams();
+		$controller = $dispatcher->getController ();
+		$action = $dispatcher->getAction ();
+		$params = $dispatcher->getParams ();
+		
+		$cache = AXION_CACHE::getInstance('file');
+		echo rand(0,10);
+		//$cache->setOptions(array('cachepath' => DATA_CACHE_PATH));
+		//$cache->set('sdf','sdfsdfsdf');
+		//p($cache->get('sdf'));
 	}
 	
 	/**
@@ -102,20 +103,6 @@ class AXION_APPLICATION {
 	 */
 	public function errorHandler($errno, $errstr, $errfile, $errline, $errcontext) {
 	
-	}
-	
-	/**
-	 * 默认异常处理方法
-	 *
-	 * @param object $e
-	 */
-	public function exceptionHandler($e) {
-		if ($e instanceof AXION_EXCEPTION) {
-			if ($e->isHalt ()) {
-				//@todo 替换为自定义的终止函数
-				echo $e->__toString ();
-			}
-		}
 	}
 }
 ?>

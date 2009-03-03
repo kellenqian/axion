@@ -102,7 +102,6 @@ class Axion {
 				$isSHM = true;
 			} else {
 				$appTmpPath = '/tmp';
-				$isSHM = true;
 			}
 		}
 		
@@ -115,6 +114,13 @@ class Axion {
 		 * 定义框架默认使用的临时目录路径
 		 */
 		define ( 'TEMP_PATH', OS == 'windows' ? getenv ( 'TEMP' ) : $appTmpPath );
+		
+		/**
+		 * 定义临时目录剩余空间(Megabytes)
+		 */
+		$freeSpace = disk_free_space($appTmpPath ? $appTmpPath : getenv('TEMP'));
+		$freeSpaceMB = $freeSpace ? floor($freeSpace /1024/1024) : 0;
+		define('TEMP_FREE_SPACE',$freeSpaceMB);
 		
 		/**
 		 * 定义当前AXION所在路径
@@ -153,8 +159,13 @@ class Axion {
 		/**
 		 * 加载AXION启动所必须的类
 		 */
-		require AXION_PATH . DS . 'lib' . DS . 'axion' . DS .'config.class.php';
-		require AXION_PATH . DS . 'lib' . DS . 'axion' . DS .'application.class.php';
+		require AXION_PATH . DS . 'lib' . DS . 'axion' . DS . 'config.class.php';
+		require AXION_PATH . DS . 'lib' . DS . 'axion' . DS . 'application.class.php';
+		
+		/**
+		 * 注册默认异常处理函数
+		 */
+		set_exception_handler ( array ($this, 'exceptionHandler' ) );
 		
 		/**
 		 * 加载AXION框架默认配置文件
@@ -180,8 +191,8 @@ class Axion {
 	 * 载入可以缓存加载的文件
 	 *
 	 */
-	public static function loadCachedClass(){
-		
+	public static function loadCachedClass() {
+	
 	}
 	
 	/**
@@ -212,10 +223,9 @@ class Axion {
 		$file_array [] = strtolower ( join ( DS, $package_array ) );
 		
 		$path_array = explode ( PATH_SEPARATOR, get_include_path () );
-		
 		foreach ( $path_array as $path ) {
 			foreach ( $file_array as $file ) {
-				$fullPath = trim ( $path, DS ) . DS . $file . '.php';
+				$fullPath = rtrim ( $path, DS ) . DS . $file . '.php';
 				if (file_exists ( $fullPath )) {
 					require_once $fullPath;
 					self::$loaded_class [$package_name] = $fullPath;
@@ -226,11 +236,24 @@ class Axion {
 	}
 	
 	/**
+	 * 默认异常处理方法
+	 *
+	 * @param object $e
+	 */
+	public function exceptionHandler($e) {
+		if ($e instanceof AXION_EXCEPTION) {
+			p($e->__toString());
+		}
+	}
+	
+	/**
 	 * 框架析构函数
 	 *
 	 */
-	public function __destruct(){
-		self::$AXION_RUN_TIME = microtime(true);
+	public function __destruct() {
+		self::$AXION_RUN_TIME = microtime ( true );
+		//echo AXION_UTIL::excuteTime();
+		//echo number_format(memory_get_usage()/1024).'k';	
 	}
 }
 
