@@ -12,34 +12,47 @@
  * @param bool $bool_isBreakPoint 开启则打印完成后停止程序执行
  * @return null
  */
-function P($mix_target, $bool_isBreakPoint = false) {
+function P($mix_target, $bool_isBreakPoint = false , $return = false) {
 	static $_pcount;
-	$lable = ++ $_pcount;
-	$debug = debug_backtrace ();
-	$str = '<pre>';
-	if ($lable) {
-		$str .= 'Debug Lable:<strong>' . $lable . '</strong><br/>';
-	}
-	$str .= 'In <strong>' . $debug [0] ['file'] . '</strong> @Line <strong>' . $debug [0] ['line'] . '</strong><BR/>';
+	$lable = $return ? $_pcount : ++ $_pcount;
 	
 	if (is_array ( $mix_target )) {
 		foreach ( $mix_target as $k => $v ) {
 			if (is_bool ( $v ))
 				$mix_target [$k] = $v == true ? '(bool)true' : '(bool)false';
+			if(is_null($v))
+				$mix_target[$k] = '(null)';
+			if(is_array($v))
+				$mix_target[$k] = p($v,false,true);
 		}
 	}
 	if (is_bool ( $mix_target ))
 		$output = $mix_target == true ? '(bool)true' : '(bool)false';
-	else
-		$output = htmlspecialchars ( print_r ( $mix_target, TRUE ), ENT_QUOTES );
+	if(is_null($mix_target))
+		$output = '(null)';
+	
+	if($return){
+		return $mix_target;
+	}
+	
+	$output = htmlspecialchars ( print_r ( $mix_target, TRUE ), ENT_QUOTES );
+	
+	$debug = debug_backtrace ();
+	
+	$str = '<pre>';
+	if ($lable) {
+		$str .= 'Debug Lable:<strong>' . $lable . '</strong><br/>';
+	}
+	$str .= 'In <strong>' . $debug [0] ['file'] . '</strong> @Line <strong>' . $debug [0] ['line'] . '</strong><BR/>';
 	$str .= $output;
 	$str .= '</pre>';
 	
 	if ($bool_isBreakPoint) {
 		exit ( $str );
-	} else {
-		echo $str;
 	}
+	
+	echo $str;
+	return ;
 }
 
 /**
