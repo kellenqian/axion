@@ -29,6 +29,9 @@ class AXION_CACHE {
 		$instance = new $className;
 		
 		if($instance instanceof AXION_INTERFACE_CACHE){
+			$config = AXION_CONFIG::get('axion.cache');
+			$config['path'] = $config['path'] ? $config['path'] : DATA_CACHE_PATH;
+			$instance->setOptions($config);
 			return $instance;
 		}else{
 			throw new AXION_EXCEPTION('该对象并非合法的缓存对象');

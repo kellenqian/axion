@@ -11,18 +11,27 @@
 		<class>AXION_DISPATCHER</class>
 	</dispatcher>
 	<controller>
+		<default>index</default>
 	</controller>
+	<action>
+		<default>index</default>
+	</action>
 	<model>
 	</model>
 	<view>
 		<compress>gzip</compress>
-		<striphtml>0</striphtml>
+		<striphtml>false</striphtml>
 	</view>
 	<session>
 		<handler>file</handler>
 		<hashkey>axionFramwork</hashkey>
 	</session>
+	<cache>
+		<handler>file</handler>
+		<expire>60</expire>
+		<prefix>axion</prefix>
+	</cache>
 	<misc>
-		<timezone>asia/shanghai</timezone>
+		<timezone>Asia/Shanghai</timezone>
 	</misc>
 </axion>

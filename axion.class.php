@@ -114,14 +114,7 @@ class Axion {
 		 * 定义框架默认使用的临时目录路径
 		 */
 		define ( 'TEMP_PATH', OS == 'windows' ? getenv ( 'TEMP' ) : $appTmpPath );
-		
-		/**
-		 * 定义临时目录剩余空间(Megabytes)
-		 */
-		$freeSpace = disk_free_space($appTmpPath ? $appTmpPath : getenv('TEMP'));
-		$freeSpaceMB = $freeSpace ? floor($freeSpace /1024/1024) : 0;
-		define('TEMP_FREE_SPACE',$freeSpaceMB);
-		
+	
 		/**
 		 * 定义当前AXION所在路径
 		 */
@@ -252,8 +245,8 @@ class Axion {
 	 */
 	public function __destruct() {
 		self::$AXION_RUN_TIME = microtime ( true );
-		//echo AXION_UTIL::excuteTime();
-		//echo number_format(memory_get_usage()/1024).'k';	
+		echo AXION_UTIL::excuteTime();
+		echo number_format(memory_get_usage()/1024).'k';	
 	}
 }
 

@@ -36,7 +36,7 @@ class AXION_CONFIG {
 	 * @param mix $value 配置段值
 	 * @return mix
 	 */
-	private static function register($package, $value = false) {
+	private static function register($package, $value) {
 		$packageTolower = strtolower ( $package );
 		
 		$pointer = & self::$container;
@@ -50,9 +50,7 @@ class AXION_CONFIG {
 			$pointer = & $pointer [$packageTolower];
 		}
 		
-		if ($value) {
-			$pointer = $value;
-		}
+		$pointer = $value;
 		
 		return $pointer;
 	}
@@ -115,13 +113,13 @@ class AXION_CONFIG {
 			$value = array_change_key_case_recursive ( $value );
 		}
 		
-		$currentConfig = self::register ( $package, $value );
+		self::register ( $package, $value );
 		
 		if ($lock) {
 			self::lock ( $package );
 		}
 		
-		return $currentConfig;
+		return true;
 	}
 	
 	/**

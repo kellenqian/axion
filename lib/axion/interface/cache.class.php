@@ -2,7 +2,7 @@
 interface AXION_INTERFACE_CACHE{
 	public function get($key);
 	
-	public function set($key , $value);
+	public function set($key , $value , $expire = '');
 	
 	public function delete($key);
 	

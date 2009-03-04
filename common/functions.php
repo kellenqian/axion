@@ -20,16 +20,19 @@ function P($mix_target, $bool_isBreakPoint = false , $return = false) {
 		foreach ( $mix_target as $k => $v ) {
 			if (is_bool ( $v ))
 				$mix_target [$k] = $v == true ? '(bool)true' : '(bool)false';
-			if(is_null($v))
+			if($v === null)
 				$mix_target[$k] = '(null)';
 			if(is_array($v))
 				$mix_target[$k] = p($v,false,true);
 		}
 	}
+	
+	$result = '';
+	
 	if (is_bool ( $mix_target ))
-		$output = $mix_target == true ? '(bool)true' : '(bool)false';
-	if(is_null($mix_target))
-		$output = '(null)';
+		$result = $mix_target == true ? '(bool)true' : '(bool)false';
+	if($mix_target === null)
+		$result = '(null)';
 	
 	if($return){
 		return $mix_target;
@@ -44,7 +47,7 @@ function P($mix_target, $bool_isBreakPoint = false , $return = false) {
 		$str .= 'Debug Lable:<strong>' . $lable . '</strong><br/>';
 	}
 	$str .= 'In <strong>' . $debug [0] ['file'] . '</strong> @Line <strong>' . $debug [0] ['line'] . '</strong><BR/>';
-	$str .= $output;
+	$str .= $output.$result;
 	$str .= '</pre>';
 	
 	if ($bool_isBreakPoint) {

@@ -69,18 +69,12 @@ class AXION_APPLICATION {
 		$dispatcher = new $dispatcherClass ( );
 		
 		if (! ($dispatcher instanceof AXION_INTERFACE_DISPATCHER)) {
-			throw new AXION_EXCEPTION ( '无效的调度器对象', E_ERROR );
+			throw new AXION_EXCEPTION ( '无效的调度器对象' );
 		}
 		
-		$controller = $dispatcher->getController ();
-		$action = $dispatcher->getAction ();
-		$params = $dispatcher->getParams ();
+		$params = $dispatcher->getParams();
 		
-		$cache = AXION_CACHE::getInstance('file');
-		echo rand(0,10);
-		//$cache->setOptions(array('cachepath' => DATA_CACHE_PATH));
-		//$cache->set('sdf','sdfsdfsdf');
-		//p($cache->get('sdf'));
+		p($params);
 	}
 	
 	/**
@@ -102,7 +96,7 @@ class AXION_APPLICATION {
 	 * @param array $errcontext
 	 */
 	public function errorHandler($errno, $errstr, $errfile, $errline, $errcontext) {
-	
+		p($errstr);
 	}
 }
 ?>
