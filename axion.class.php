@@ -108,7 +108,7 @@ class Axion {
 		/**
 		 * 定义是否使用了共享内存
 		 */
-		define ( 'IS_SHM', $isSHM ? true : false );
+		define ( 'IS_SHM', $isSHM );
 		
 		/**
 		 * 定义框架默认使用的临时目录路径
