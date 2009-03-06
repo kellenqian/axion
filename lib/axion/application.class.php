@@ -115,14 +115,14 @@ class AXION_APPLICATION {
 		}
 		
 		$params = $dispatcher->getParams ();
-		p(IS_CLI);
+		
 		$appClass = $params ['controller'] . '_' . $params ['action'];
 		
 		if(class_exists($appClass)){
-				
+					
 		}
 		
-		
+		p(debug_backtrace());
 	}
 	
 	/**
