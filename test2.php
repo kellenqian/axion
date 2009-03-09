@@ -1,43 +1,35 @@
 <?php
 	require( 'config/variableDefine.ini.php' );
-	require( 'tool/default.fun.php' );
-	require_once( 'lib/processtatus.class.php' );
-	require_once( 'aquarius/datamap.class.php' );
-	require_once( 'aquarius/dataschema.class.php' );
-	require_once( 'lib/database/database.class.php' );
-	require_once( 'lib/database/mysql.class.php' );
+	require( 'lib/axion/util/default.fun.php' );
+	require_once( 'lib/axion/processtatus.class.php' );
+	require_once( 'lib/axion/orm/datamap.class.php' );
+	require_once( 'lib/axion/orm/datasearch.class.php' );
+	require_once( 'lib/axion/orm/dataschema.class.php' );
+	require_once( 'lib/axion/orm/htmldoc.class.php' );
+	require_once( 'lib/axion/db/database.class.php' );
+	require_once( 'lib/axion/db/mysql.class.php' );
 	
-	class t_uchk extends DataMap 
+	class t_uchk extends Axion_orm_DataMap 
 	{
-		function __construct()
-		{
-			$this->str_tableKey = 'uchk';
-			
-			parent::__construct();
-		}//end function __construct
-		
 		function initSelf()
 		{
-			$this->arr_bill['uchk_ID'] = array( 'type' => DataMap::$str_typeString, 'name' => '创建人编号', 'vType' => 'hidden' );
-			$this->arr_bill['uchk_Name'] = array( 'type' => DataMap::$str_typeString, 'name' => '登录名', 'length' => 96, 'unique' => true );
-			$this->arr_bill['uchk_Mail'] = array( 'type' => DataMap::$str_typeMail, 'name' => '注册邮箱', 'length' => 96, 'unique' => true );
-			$this->arr_bill['uchk_PS'] = array( 'type' => DataMap::$str_typeString, 'name' => '密码', 'length' => 32, 'vType' => 'password' );
-			$this->arr_bill['uchk_Code'] = array( 'defValue' => '', 'type' => DataMap::$str_typeString, 'name' => '校验码' );
-			$this->arr_bill['uchk_IP'] = array( 'defValue' => '', 'type' => DataMap::$str_typeString, 'name' => 'IP地址', 'length' => 15 , 'action' => 'i' );
-			$this->arr_bill['uchk_Time'] = array( 'defValue' => 'CURRENT_TIMESTAMP', 'isExpression' => true, 'type' => DataMap::$str_typeString, 'name' => '注册时间', 'isNull' => true, 'action' => 'n' );
-			$this->arr_bill['role_ID'] = array( 'defValue' => '1', 'defValue' => '1', 'type' => DataMap::$str_typeInt, 'name' => '身份标识', 'isNull' => false );
-			$this->arr_bill['uchk_Disabled'] = array( 'value' => 0, 'type' => DataMap::$str_typeInt, 'name' => '禁用标识', 'vType' => 'checkbox' );
+			$this->arr_bill['uchk_ID'] = array( 'type' => Axion_orm_DataMap::TYPE_STRING, 'name' => '创建人编号', 'vType' => 'hidden', 'action' => 'a' );
+			$this->arr_bill['uchk_Name'] = array( 'type' => Axion_orm_DataMap::TYPE_STRING, 'name' => '登录名', 'maxLength' => 4, 'unique' => true, 'action' => 'a' );
+			$this->arr_bill['uchk_Mail'] = array( 'type' => Axion_orm_DataMap::TYPE_MAIL, 'name' => '注册邮箱', 'length' => 96, 'unique' => true, 'action' => 'a' );
+			$this->arr_bill['uchk_PS'] = array( 'type' => Axion_orm_DataMap::TYPE_STRING, 'name' => '密码', 'length' => 32, 'vType' => 'password', 'action' => 'a' );
+			$this->arr_bill['uchk_Code'] = array( 'defValue' => '', 'type' => Axion_orm_DataMap::TYPE_STRING, 'name' => '校验码', 'action' => 'a' );
+			$this->arr_bill['uchk_IP'] = array( 'defValue' => '', 'type' => Axion_orm_DataMap::TYPE_STRING, 'name' => 'IP地址', 'minLength' => 15, 'maxLength' => 15 , 'action' => 'i' );
+			$this->arr_bill['uchk_Time'] = array( 'defValue' => 'CURRENT_TIMESTAMP', 'isExpression' => true, 'type' => Axion_orm_DataMap::TYPE_STRING, 'name' => '注册时间', 'isNull' => true, );
+			$this->arr_bill['role_ID'] = array( 'defValue' => '1', 'defValue' => '1', 'type' => Axion_orm_DataMap::TYPE_INT, 'name' => '身份标识', 'isNull' => false, 'vType' => 'select', 'action' => 'a' );
+			$this->arr_bill['uchk_Disabled'] = array( 'defValue' => 0, 'maxLength' => 10, 'type' => Axion_orm_DataMap::TYPE_INT, 'name' => '禁用标识', 'vType' => 'select', 'action' => 'a' );
+			$this->arr_bill['uchk_Disabled']['enum'] = array( array( 'name' => '开启', 'value' => '1' ), array( 'name' => '关闭', 'value' => '0' ) );
 			
 			parent::initSelf();
 		}//end function initSelf
 	}//class t_uchk
 	
-	class uchk extends DataSchema 
+	class uchk extends Axion_orm_DataSearch 
 	{
-		function __construct()
-		{
-			parent::__construct( 't_uchk' );
-		}//end function __construct
 	}
 	
 ###############################INSERT############################
@@ -61,7 +53,7 @@
 //	
 //	print_r( $_obj_class->getBill( ) );
 ###############################GET############################
-//	$obj = new dataschema( 't_uchk' );
+//	$obj = new uchk();
 //   $obj->get1;
 //   $obj->get1();	
 //   $obj->getuchk_Name( 'Alone' );		
@@ -80,7 +72,6 @@
    
    
 ###############################UPDATE############################
-	
    $obj = new uchk();
    $_void_result = $obj->end;
    if( !$_void_result )
@@ -90,24 +81,35 @@
    }//if
    
    $_obj_uchk = $_void_result[0];
-//   print_r( $_obj_uchk->getBill() );
+   $_obj_uchk->setBill( 'uchk_Name', 'style', 'border:solid 1px blue' );
+   $_obj_uchk->setBill( 'uchk_Name', 'class', 'test' );
+//   $_arr_name = $_obj_uchk->getBill( 'uchk_Name' );
+//   $_arr_name['style'] = 'border:solid 1px red;';
+//   $_obj_uchk->uchk_Name = $_arr_name;
    
-   $_obj_uchk->uchk_Disabled = '10000000';
-   if( !$_obj_uchk->updateData() )
+   $_obj_htmlDoc = Axion_orm_HTMLDoc::_init( $_obj_uchk );
+   $_arr_reuslt = $_obj_htmlDoc->getForm();
+   foreach ( $_arr_reuslt as $_arr_dom ) 
    {
-   	$obj_processStatus = ProcessStatus::_init();
-   	print_r( $obj_processStatus->getAllData() );
-   	
-   	$_obj_MySQL = MySQL::_init();
-   	$_obj_MySQL->commitData( false );
-   }//if
-   else 
-   {
-   	$_obj_MySQL = MySQL::_init();
-   	$_obj_MySQL->commitData();
-   	echo 'OK';
-   }
-   
-   
+   	echo $_arr_dom['name'] . ':'. $_arr_dom['html'] . '<br/>';
+   }//end foreach
+//   print_r( $_obj_htmlDoc->getForm() );
+
+//	$obj = new uchk();
+//	$obj_dataMap = $obj->top;
+//	$obj_dataMap[0]->uchk_Name='HI';
+//	$obj_dataMap[0]->uchk_IP = '123456789012345';
+//	$obj_dataMap[0]->uchk_Mail = 'ls@ljs.dd';
+//	$_str_sql = $obj_dataMap[0]->insertData();
+//	if( !$_str_sql )
+//	{
+//		$obj_processStatus = ProcessStatus::_init();	
+//		print_r( $obj_processStatus->getAllData() );
+//		exit;
+//	}
+//	else 
+//		echo $_str_sql;
+//	$obj_MySQL = MySQL::_init();
+//	print_r( $obj_MySQL->getTablesInfo() );
    
 ?>
