@@ -24,7 +24,7 @@
 	☆		重写程序使之支持新框架AXION						☆
 	☆															☆
 	***********************************************/ 	
-	class ProcessStatus 
+	class Axion_ProcessStatus 
 	{
 		protected static $obj_this;
 		

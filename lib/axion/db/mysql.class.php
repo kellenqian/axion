@@ -55,9 +55,9 @@
 		/**
 		 * 信息池实例
 		 *
-		 * @var ProcessStatus
+		 * @var Axion_Axion_ProcessStatus
 		 */
-		protected $obj_processStatus;
+		protected $obj_Axion_ProcessStatus;
 		
 		/**
 		 * 记录数据库执行结果
@@ -72,7 +72,7 @@
 		 */
 		function __construct()
 		{
-			$this->obj_processStatus	= ProcessStatus::_init();
+			$this->obj_Axion_ProcessStatus	= Axion_ProcessStatus::_init();
 			$this->arr_QueryList			= array();
 			$this->bool_OK					= true;
 			
@@ -138,13 +138,13 @@
 			$this->hd_connect = @mysql_connect( $this->str_host . ":" . $this->int_port , $this->str_user , $this->str_password , true );
 			if( !$this->hd_connect )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_ERROR , "与数据库{$this->str_host}连接失败。" );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_ERROR , "与数据库{$this->str_host}连接失败。" );
 				return false;
 			}//if
 			
 			if( !@mysql_selectdb( $this->str_db , $this->hd_connect ) )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_ERROR , "打开数据库{$this->str_host}.{$this->str_db}失败。" );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_ERROR , "打开数据库{$this->str_host}.{$this->str_db}失败。" );
 				return false;
 			}//if
 			
@@ -224,7 +224,7 @@
 				
 			if( !$this->querySQL( $_str_sql ) )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_ERROR , '在进行数据提交/撤销时发生异常。' );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_ERROR , '在进行数据提交/撤销时发生异常。' );
 				return false;
 			}//if
 			
@@ -243,7 +243,7 @@
 			$_str_sql = "SET AUTOCOMMIT = {$_int_autoCommitSet}";
 			if( !$this->querySQL( $_str_sql ) )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_NOTICE , "数据库发生异常，已将连接关闭。" );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_NOTICE , "数据库发生异常，已将连接关闭。" );
 				$this->unconnect();
 				return false;
 			}//if
@@ -262,7 +262,7 @@
 			$_void_resutl = $this->querySQL( $_str_sql );
 			if( !$_void_resutl )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_NOTICE , '尝试获取最后一次插入的记录的主键值失败。' );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_NOTICE , '尝试获取最后一次插入的记录的主键值失败。' );
 				return false;
 			}//if
 			
@@ -280,7 +280,7 @@
 			$_void_result = $this->querySQL( $_str_sql );
 			if( empty( $_void_result ) )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_NOTICE , '获取所有符合提交的记录总数时发生了错误。' );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_NOTICE , '获取所有符合提交的记录总数时发生了错误。' );
 				return false;
 			}//if
 			
@@ -297,7 +297,7 @@
 			$_void_result = @mysql_affected_rows( $this->hd_connect );
 			if( !$_void_result )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_NOTICE , '获取最后一次数据库操作语句更新的记录数失败。' );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_NOTICE , '获取最后一次数据库操作语句更新的记录数失败。' );
 				return false;
 			}//if
 			
@@ -317,7 +317,7 @@
 			{
 				if( !$this->connect() )
 				{
-					$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_ERROR, '数据库连接错误' );
+					$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_ERROR, '数据库连接错误' );
 					return false;
 				}//if
 			}//if
@@ -332,7 +332,7 @@
 			{
 				$_arr_SQLHistory['ok'] = false;
 				$this->bool_OK = false;
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_ERROR , @mysql_errno( $this->hd_connect ) . @mysql_error( $this->hd_connect ) . ' IN SQL ' . $str_sql );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_ERROR , @mysql_errno( $this->hd_connect ) . @mysql_error( $this->hd_connect ) . ' IN SQL ' . $str_sql );
 				return false;
 			}//if
 			else 
