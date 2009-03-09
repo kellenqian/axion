@@ -21,11 +21,11 @@
 		 */
 		protected static $obj_this;
 		
-		protected $obj_processStatus;
+		protected $obj_Axion_Axion_ProcessStatus;
 		
 		public function __construct()
 		{
-			$this->obj_processStatus = ProcessStatus::_init();
+			$this->obj_Axion_ProcessStatus = Axion_ProcessStatus::_init();
 		}//end function __construct
 		
 		/**
@@ -55,7 +55,7 @@
 		
 		
 		/**
-		 * 根据参数的验证信息验证指定数据的合法性，并将相关的结果保存到obj_processStatus中
+		 * 根据参数的验证信息验证指定数据的合法性，并将相关的结果保存到obj_Axion_ProcessStatus中
 		 *
 		 * @param array $arr_paraInfo
 		 * @return boolean
@@ -64,7 +64,7 @@
 		{
 			if( !$arr_paraInfo )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_WARNING, "请指定一个要验证的信息" );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, "请指定一个要验证的信息" );
 				return false;
 			}
 			
@@ -96,12 +96,12 @@
 		{
 			if( !checkInt( $arr_paraInfo['value'], $arr_paraInfo['maxLength'], $arr_paraInfo['minLength']  ) )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
 				return false;
 			}//if
 			else if( $arr_paraInfo['unsigned'] && ( $arr_paraInfo['value'] != abs( $arr_paraInfo['value'] ) ) )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
 				return false;
 			}//else if
 			
@@ -112,12 +112,12 @@
 		{
 			if( !checkFloat( $arr_paraInfo['value'], $arr_paraInfo['maxLength'], $arr_paraInfo['minLength'] ) )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
 				return false;
 			}//if
 			else if( $arr_paraInfo['unsigned'] && ( $arr_paraInfo['value'] != abs( $arr_paraInfo['value'] ) ) )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
 				return false;
 			}//else if
 			
@@ -130,18 +130,18 @@
 			{
 				if( empty( $arr_paraInfo['defValue'] ) )
 				{
-					$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'不能为空。" );
+					$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'不能为空。" );
 					return false;
 				}
 				else
 				{
-					$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_NOTICE, "'{$arr_paraInfo['name']}'启用了默认值。" );
+					$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_NOTICE, "'{$arr_paraInfo['name']}'启用了默认值。" );
 					$arr_paraInfo['value'] = $arr_paraInfo['defValue'];
 				}
 			}//if
 			elseif( !checkString( $arr_paraInfo['value'], $arr_paraInfo['maxLength'], $arr_paraInfo['minLength'], $arr_paraInfo['preg'] ) )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
 				return false;
 			}//if
 			

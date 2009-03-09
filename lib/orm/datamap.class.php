@@ -63,9 +63,9 @@
 		/**
 		 * 消息处理池
 		 *
-		 * @var ProcessStatus
+		 * @var Axion_Axion_ProcessStatus
 		 */
-		protected $obj_processStatus;
+		protected $obj_Axion_ProcessStatus;
 		
 		
 		/**
@@ -92,7 +92,7 @@
 		{
 			$this->str_tableKey = substr( get_class( $this ), 2 );
 			
-			$this->obj_processStatus = ProcessStatus::_init();
+			$this->obj_Axion_ProcessStatus = Axion_ProcessStatus::_init();
 			
 			$this->arr_bill = array();
 		
@@ -100,7 +100,7 @@
 			$this->initSelf();
 			if( empty( $this->str_tableKey ) )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_ERROR, '请指定数据表关键字' );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_ERROR, '请指定数据表关键字' );
 				return false;
 			}
 			
@@ -133,7 +133,7 @@
 					$this->arr_bill[$str_name]['value'] = $void_value;
 			}
 			else 
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_NOTICE, '未获得指定的数据结构' );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_NOTICE, '未获得指定的数据结构' );
 				
 			return true;
 		}//end function __set
@@ -228,7 +228,7 @@
 						$_void_result = $this->obj_MySQL->querySQL( $_str_SQLQuery );
 						if( !empty( $_void_result ) )
 						{
-							$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_WARNING, "已存在一个相同的{$this->arr_bill[$_str_key]['name']}。" );
+							$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, "已存在一个相同的{$this->arr_bill[$_str_key]['name']}。" );
 							return false;
 						}//if
 					}//if
@@ -279,7 +279,7 @@
 				
 			if( empty( $_int_ID ) )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_WARNING, '未获得修改标识' );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, '未获得修改标识' );
 				return false;
 			}
 			
@@ -397,7 +397,7 @@
 					return $this->arr_bill[$str_key];
 				else 
 				{
-					$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_WARNING, '未获得指定的数据结构' );
+					$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, '未获得指定的数据结构' );
 					return false;
 				}
 			}
@@ -417,7 +417,7 @@
 		{
 			if( !isset( $this->arr_bill[$str_key] ) )
 			{
-				$this->obj_processStatus->newMessage( ProcessStatus::$INT_ERR_WARNING, '未获得指定的数据结构' );
+				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, '未获得指定的数据结构' );
 				return false;
 			}
 			
