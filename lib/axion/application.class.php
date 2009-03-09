@@ -52,9 +52,10 @@ class AXION_APPLICATION {
 		/**
 		 * 设置应用程序自动加载目录
 		 */
-		Axion::addIncludePath ( APPLICATION_PATH . DS . 'lib' . DS . 'controller' );//控制器目录
-		Axion::addIncludePath ( APPLICATION_PATH . DS . 'lib' . DS . 'model' );//模型目录
+		Axion::addIncludePath ( APPLICATION_PATH . DS . 'lib' . DS . 'controller' ); //控制器目录
+		Axion::addIncludePath ( APPLICATION_PATH . DS . 'lib' . DS . 'model' ); //模型目录
 		
+
 		/**
 		 * 注册默认错误处理函数
 		 */
@@ -62,16 +63,22 @@ class AXION_APPLICATION {
 		switch ($debugLevel) {
 			case 1 :
 				$level = E_ALL;
+				/**
+				 * 确保无法被错误函数捕捉的错误可以打印
+				 */
+				ini_set ( 'display_errors', 1 );
 				break;
 			case 0 :
 				$level = E_ERROR | E_PARSE;
+				/**
+				 * 部署模式关闭错误信息
+				 */
+				ini_set ( 'display_errors', 0 );
 				break;
 		}
 		
 		/**
 		 * 设置程序错误提示开关
-		 * 
-		 * 部署模式不打印错误
 		 */
 		error_reporting ( $level );
 		
@@ -85,9 +92,16 @@ class AXION_APPLICATION {
 		define ( 'VIEW_CACHE_PATH', TEMP_PATH . DS . 'axion_' . $this->uniqueId . DS . 'viewcache' );
 		define ( 'CODE_CACHE_PATH', TEMP_PATH . DS . 'axion_' . $this->uniqueId . DS . 'codecache' );
 		
+		
+		/**
+		 * 定义应用程序各个库路径常量
+		 */
+		define('APP_TEMPLATE_PATH',APPLICATION_PATH . DS . 'lib' . DS . 'template');
+		
 		/**
 		 * 创建应用程序所需的临时文件目录
 		 */
+		/**@todo 是否移除这部分的判断一次性完成？ **/
 		$tmpDirs = array ('data_cache' => DATA_CACHE_PATH, 'db_cache' => DB_CACHE_PATH, 'view_cache' => VIEW_CACHE_PATH, 'code_cache' => CODE_CACHE_PATH );
 		
 		foreach ( $tmpDirs as $v ) {
@@ -118,11 +132,34 @@ class AXION_APPLICATION {
 		
 		$appClass = $params ['controller'] . '_' . $params ['action'];
 		
-		if(class_exists($appClass)){
-					
+		if (! class_exists ( $appClass )) {
+			throw new AXION_EXCEPTION ( '无法找到控制器' );
 		}
 		
-		p(debug_backtrace());
+		//捕获控制器的所有非法输出
+		ob_start ();
+		
+		//实例化控制器对象
+		$instance = new $appClass ( );
+		
+		if(!$instance->responseTo()){
+			$instance->responseTo(REQUEST_METHOD);
+		}
+		
+		if (! $instance instanceof AXION_CONTROLLER) {
+			throw new AXION_EXCEPTION ( '非法的控制器对象' );
+		}
+		
+		//实例化渲染器对象
+		$render = new AXION_RENDER($instance);
+		
+		$extOutput = ob_get_contents ();
+		
+		ob_end_clean ();
+		
+		$render->output();
+		
+		//echo $extOutput;
 	}
 	
 	/**

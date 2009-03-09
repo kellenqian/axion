@@ -39,6 +39,7 @@ Class AXION_DISPATCHER implements AXION_INTERFACE_DISPATCHER{
 		$controller = array_shift($pathinfoArray);
 		$action		= array_shift($pathinfoArray);
 		
+		$params = array();
 		for ($i=0 ; $i < sizeof($pathinfoArray) ; $i++){
 			if($pathinfoArray[$i]){
 				$params[$pathinfoArray[$i]] = $pathinfoArray[++$i];

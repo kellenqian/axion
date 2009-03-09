@@ -48,7 +48,7 @@ class Axion {
 	 */
 	public static $loaded_class = array ();
 	/**
-	 * 是否载入了缓存文件
+	 * 代码缓存文件名
 	 *
 	 * @var unknown_type
 	 */
@@ -87,9 +87,12 @@ class Axion {
 		define ( 'OS', DS == '\\' ? 'windows' : 'linux' );
 		
 		/**
-		 * 定义当前PHP是否运行于CLI模式下的标志
+		 * 定义框架当前请求方式
 		 */
-		define ( 'IS_CLI', PHP_SAPI == 'cli' ? true : false );
+		$requestMethod = 'html';
+		if(PHP_SAPI == 'cli')
+			$requestMethod = 'cli';
+		define('REQUEST_METHOD',$requestMethod);
 		
 		/**
 		 * 判断是否可以使用共享内存
@@ -114,7 +117,7 @@ class Axion {
 		 * 定义框架默认使用的临时目录路径
 		 */
 		define ( 'TEMP_PATH', OS == 'windows' ? getenv ( 'TEMP' ) : $appTmpPath );
-	
+		
 		/**
 		 * 定义当前AXION所在路径
 		 */
@@ -155,6 +158,7 @@ class Axion {
 		require AXION_PATH . DS . 'lib' . DS . 'axion' . DS . 'config.class.php';
 		require AXION_PATH . DS . 'lib' . DS . 'axion' . DS . 'application.class.php';
 		
+		
 		/**
 		 * 注册默认异常处理函数
 		 */
@@ -164,6 +168,11 @@ class Axion {
 		 * 加载AXION框架默认配置文件
 		 */
 		AXION_CONFIG::loadConfigFile ( AXION_PATH . DS . 'common' . DS . 'config.xml' );
+		
+		/**
+		 * 加载框架缓存文件
+		 */
+		self::loadCachedClass();
 		
 		/**
 		 * 记录框架初始化完成时间 
@@ -184,8 +193,27 @@ class Axion {
 	 * 载入可以缓存加载的文件
 	 *
 	 */
-	public static function loadCachedClass() {
+	private static function loadCachedClass() {
+		if(REQUEST_METHOD != 'cli')
+			$prefix = $_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : '';
+		else
+			$prefix = join('_',$_SERVER['argv']);
+			
+		$url = $prefix.$_SERVER['PHP_SELF'];
+		$urlHash = md5($url);
+		$cacheFile = TEMP_PATH . DS . 'axion_' . 
+					 md5(APPLICATION_PATH) . DS . 
+					 'codecache' . DS . $urlHash . '.php';
 		
+		self::$load_cache_file = $cacheFile;
+		if (file_exists ( $cacheFile )) {
+			$codeFile = unserialize ( file_get_contents ( $cacheFile ) );
+			
+			self::$loaded_class = $codeFile;
+			foreach ( $codeFile as $v ) {
+				require_once $v;
+			}
+		}
 	}
 	
 	/**
@@ -209,12 +237,10 @@ class Axion {
 	 * @param string $package_name 类名
 	 */
 	public static function autoloadClass($package_name) {
-		/*@todo 需要完成二次启动自动加载相应文件的功能 */
 		$package_array = split ( '_', $package_name );
 		$file_array [] = strtolower ( join ( DS, $package_array ) );
 		array_push ( $package_array, array_pop ( $package_array ) . '.class' );
 		$file_array [] = strtolower ( join ( DS, $package_array ) );
-		
 		$path_array = explode ( PATH_SEPARATOR, get_include_path () );
 		foreach ( $path_array as $path ) {
 			foreach ( $file_array as $file ) {
@@ -235,7 +261,7 @@ class Axion {
 	 */
 	public function exceptionHandler($e) {
 		if ($e instanceof AXION_EXCEPTION) {
-			p($e->__toString());
+			p ( $e->__toString () );
 		}
 	}
 	
@@ -244,9 +270,13 @@ class Axion {
 	 *
 	 */
 	public function __destruct() {
+		if (self::$new_class_found) {
+			file_put_contents ( self::$load_cache_file, serialize ( self::$loaded_class ) );
+		}
 		self::$AXION_RUN_TIME = microtime ( true );
-		echo AXION_UTIL::excuteTime();
-		echo number_format(memory_get_usage()/1024).'k';	
+		echo "<br/>";
+		echo AXION_UTIL::excuteTime ();
+		echo number_format ( memory_get_usage () / 1024 ) . 'k' . "<br/>";
 	}
 }
 

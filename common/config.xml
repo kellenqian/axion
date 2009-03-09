@@ -21,6 +21,7 @@
 	<view>
 		<compress>gzip</compress>
 		<striphtml>false</striphtml>
+		<templatesuffix>tpl</templatesuffix>
 	</view>
 	<session>
 		<handler>file</handler>

@@ -8,7 +8,9 @@ class AXION_CACHE {
 	 */
 	public static function getInstance($cacheHandlerName) {
 		static $_handler = array();
-		$cacheHandlerName = $cacheHandlerName ? $cacheHandlerName : 'file';
+		$cacheHandlerName = $cacheHandlerName ? 
+							$cacheHandlerName :
+							AXION_CONFIG::get('axion.cache.handler');
 		
 		if($_handler[$cacheHandlerName]){
 			return $_handler[$cacheHandlerName];
