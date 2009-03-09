@@ -101,7 +101,7 @@
 		/**
 		 * 单件模式创建数据库对象
 		 *
-		 * @return unknown
+		 * @return ProcessStatus
 		 */
 		static function _init()
 		{

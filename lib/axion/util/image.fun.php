@@ -73,6 +73,38 @@
 		imagecopyresized( $bitNewImage, $bitImgSource, 0, 0, 0, 0, $int_width, $int_height, $_arr_imgContent[0], $_arr_imgContent[1] );
 		return $bitNewImage;
 	}//function imgRecover
+	
+	
+	function getColor( $int_seed, $int_pigment = 0 )
+	{
+		$_str_r = dechex( abs( ( 0 - $int_pigment + $int_seed * 30 ) % 255 )  );
+		if( strlen( $_str_r ) < 2 )
+			$_str_r = "0{$_str_r}";
+			
+		$_str_g = dechex( abs( ( 150 - $int_pigment + $int_seed * 18 ) % 255 ) );
+		if( strlen( $_str_g ) < 2 )
+			$_str_g = "0{$_str_g}";
+			
+		$_str_b = dechex( abs( ( 75 - $int_pigment + $int_seed * 10 ) % 255 ) );
+		if( strlen( $_str_b ) < 2 )
+			$_str_b = "0{$_str_b}";
+		
+		switch ( $int_seed % 6 )	
+		{
+			case 0 :
+				return "#{$_str_r}{$_str_g}{$_str_b}";
+			case 1 :
+				return "#{$_str_r}{$_str_b}{$_str_g}";
+			case 2 :
+				return "#{$_str_b}{$_str_r}{$_str_g}";
+			case 3 :
+				return "#{$_str_b}{$_str_g}{$_str_r}";
+			case 4 :
+				return "#{$_str_g}{$_str_b}{$_str_r}";
+			case 5 :
+				return "#{$_str_g}{$_str_r}{$_str_b}";
+		}
+	}//end function getColor
 		
 	/**
 	 * 绘制饼型统计图
