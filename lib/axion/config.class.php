@@ -179,6 +179,9 @@ class AXION_CONFIG {
 			case 'php':
 				$newConfigArray = self::loadPHP($configFile);
 				break;
+			case 'yml':
+				$newConfigArray = self::loadYml($configFile);
+				break;
 			default:
 				throw new AXION_EXCEPTION('未知配置文件格式',E_NOTICE);
 				break;
@@ -219,5 +222,18 @@ class AXION_CONFIG {
 		$array = require_once $configFile;
 		return $array;
 	}
+	
+/**
+	 * 读取YML格式的配置文件
+	 *
+	 * @param string $configFile
+	 * @return array
+	 */
+	private static function loadYml($configFile){
+		$obj = new AXION_UTIL_YAML();
+		$array = $obj->YAMLLoad($configFile);
+		return $array;
+	}
+	
 }
 ?>
