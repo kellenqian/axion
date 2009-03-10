@@ -175,17 +175,18 @@
 		 * 
 		 * @return true
 		 */
-		public function changeDB( $str_databaseName = null, $str_hostName = null, $int_port = null, $str_user = null, $str_password = null, $bool_autoCommit = null )
+		public function changeDB( $str_databaseName = null, $str_user = null, $str_password = null, $bool_autoCommit = null )
 		{
 			$this->str_db			= $str_databaseName	? $str_databaseName	: $this->str_db;					//重设数据库名称
-			$this->str_host		= $str_hostName		? $str_hostName		: $this->str_host;				//重设数据库服务器地址
-			$this->int_port		= $int_port				? $int_port				: $this->int_port;				//重设数据库服务器端口
 			$this->str_user		= $str_user				? $str_user				: $this->str_user;				//重设数据库服务器账号
 			$this->str_password	= $str_password		? $str_password		: $this->str_password;			//重设数据库服务器密码
 				
-			//重设自动提交方式
-			if( !is_null( $bool_autoCommit ) )
-				$this->setAutoCommit( $bool_autoCommit );
+			if( !empty( $this->hd_connect ) )
+			{
+				$this->unconnect();
+				if( !$this->connect() )
+					return false;
+			}
 				
 			$this->unconnect();
 			
