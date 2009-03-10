@@ -105,12 +105,12 @@
 		 */
 		static function _init()
 		{
-			 if( ProcessStatus::$obj_this )
-			 	return ProcessStatus::$obj_this;
+			 if( Axion_ProcessStatus::$obj_this )
+			 	return Axion_ProcessStatus::$obj_this;
 			 else 
-			 	ProcessStatus::$obj_this = new ProcessStatus();
+			 	Axion_ProcessStatus::$obj_this = new Axion_ProcessStatus();
 			 	
-			 return ProcessStatus::$obj_this;
+			 return Axion_ProcessStatus::$obj_this;
 		}//end function _init
 		
 		/**
@@ -123,7 +123,7 @@
 		public function newMessage( $int_lv , $str_result = null )
 		{
 			if( empty( $this->ARR_ERR_LV[ $int_lv ] ) )
-				trigger_error( "无效的异常等级编号。" , ProcessStatus::$INT_ERR_ERROR );
+				trigger_error( "无效的异常等级编号。" , Axion_ProcessStatus::$INT_ERR_ERROR );
 				
 			if( is_null( $str_result ) )
 				$str_result = '';
@@ -133,7 +133,7 @@
 													 'str_result' => "{$this->ARR_ERR_LV[ $int_lv ]}:{$str_result}",
 													 'str_msg' => $str_result );
 													 
-			if( $int_lv > ProcessStatus::$INT_ERR_NOTICE )
+			if( $int_lv > Axion_ProcessStatus::$INT_ERR_NOTICE )
 				$this->bool_isNice = false;
 				
 			if( $int_lv > $this->int_maxErrLv )
@@ -243,33 +243,6 @@
 		}//function getLastMessage
 		
 		/**
-		 * 与另一个ProcessStatus对象进行消息池组合
-		 *
-		 * @param ProcessStatusObject $processStatus
-		 * @return boolean
-		 */
-		public function uniteFriend( $processStatus )
-		{
-			if( !is_a( $processStatus , 'ProcessStatus' ) )
-			{
-				$this->newMessage( ProcessStatus::$INT_ERR_ERROR , '进行合并ProcessStatus对象操作时传入的参数类型不匹配。' );
-				return false;
-			}//if
-			
-			$_arr_data = $processStatus->getAllData();
-			if( !empty( $_arr_data ) )
-			{
-				foreach ( $_arr_data as $_arr_value )
-					$this->arr_dataPool[] = $_arr_value;
-			}//if
-			$this->bool_isNice = ( $this->bool_isNice && $processStatus->bool_isNice );
-			
-			if( $this->int_maxErrLv < $processStatus->int_maxErrLv )
-				$this->int_maxErrLv = $processStatus->int_maxErrLv;
-			return true;
-		}//function uniteFriend
-		
-		/**
 		 * 清空当前消息池
 		 *
 		 * @return boolean
@@ -287,8 +260,6 @@
 		 */
 		public function output()
 		{
-			P( $this->getAllData() );
-			exit;
 		}//end function output
 	}
 
