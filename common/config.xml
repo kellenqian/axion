@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <axion>
-	<debug> 
-  		<level>1</level>
+	<debug>
+		<level>1</level>
 	</debug>
-	<db>
-		<driver>mysql</driver>
-		<port>3306</port>
-	</db>
+	<connections>
+		<databases>
+			<development>
+				<driver>mysql</driver>
+				<host>localhost</host>
+				<port>3306</port>
+				<username></username>
+				<password></password>
+				<database></database>
+				<autocommit>false</autocommit>
+			</development>
+			<deployment>
+				<driver>mysql</driver>
+				<host>localhost</host>
+				<port>3306</port>
+				<username></username>
+				<password></password>
+				<database></database>
+				<autocommit>false</autocommit>
+			</deployment>
+		</databases>
+		<memcached>
+			<application>
+				<host>localhost</host>
+				<port>11211</port>
+			</application>
+			<session>
+				<host>localhost</host>
+				<port>11211</port>
+			</session>
+		</memcached>
+	</connections>
 	<dispatcher>
 		<class>AXION_DISPATCHER</class>
 	</dispatcher>
@@ -24,13 +52,16 @@
 		<templatesuffix>tpl</templatesuffix>
 	</view>
 	<session>
-		<handler>file</handler>
-		<hashkey>axionFramwork</hashkey>
+		<handler>memcached</handler>
+		<timeout>10800</timeout>
+		<savepath></savepath>
 	</session>
 	<cache>
+		<path></path>
 		<handler>file</handler>
 		<expire>60</expire>
 		<prefix>axion</prefix>
+		<section>application</section>
 	</cache>
 	<misc>
 		<timezone>Asia/Shanghai</timezone>

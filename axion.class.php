@@ -194,6 +194,9 @@ class Axion {
 	 *
 	 */
 	private static function loadCachedClass() {
+		if(AXION_CONFIG::GET('axion.debug.level') == 1)
+			return ;
+		
 		if(REQUEST_METHOD != 'cli')
 			$prefix = $_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : '';
 		else

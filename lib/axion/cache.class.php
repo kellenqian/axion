@@ -24,7 +24,7 @@ class AXION_CACHE {
 	
 	private static function factory($handlerName){
 		$className = strtolower($handlerName);
-		if('file' == $className || 'memcached' == $className){
+		if(in_array($className , array('file','memcached'))){
 			$className = 'AXION_CACHE_'.$className;
 		}
 		
@@ -32,7 +32,7 @@ class AXION_CACHE {
 		
 		if($instance instanceof AXION_INTERFACE_CACHE){
 			$config = AXION_CONFIG::get('axion.cache');
-			$config['path'] = $config['path'] ? $config['path'] : DATA_CACHE_PATH;
+			p($config);
 			$instance->setOptions($config);
 			return $instance;
 		}else{

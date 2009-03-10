@@ -1,5 +1,5 @@
 <?php
-class AXION_RENDER_HTML {
+class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
 	private $ctrlInstance;
 	private $templatePath;
 	private $context;
@@ -13,20 +13,19 @@ class AXION_RENDER_HTML {
 	
 	public function __construct($controllerInstance) {
 		$this->ctrlInstance = $controllerInstance;
-		$this->ctrlInstance->run();
 		$this->context = $this->ctrlInstance->getContext ();
 		$this->templateEngineInit ();
 	}
 	
-	public function getResult() {
+	public function fetch() {
 		$path = get_class ( $this->ctrlInstance );
 		$file = $this->parseTemplatePath ( $path );
 		
 		foreach ( $this->context as $k => $v ) {
-			$this->templateInstance->assign($k , $v);
+			$this->templateInstance->assign ( $k, $v );
 		}
 		
-		return $this->templateInstance->fetch($file);
+		return $this->templateInstance->fetch ( $file );
 	}
 	
 	private function templateEngineInit() {

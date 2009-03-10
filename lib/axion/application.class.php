@@ -150,6 +150,9 @@ class AXION_APPLICATION {
 			throw new AXION_EXCEPTION ( '非法的控制器对象' );
 		}
 		
+		//执行action
+		$instance->run();
+		
 		//实例化渲染器对象
 		$render = new AXION_RENDER($instance);
 		
@@ -157,8 +160,10 @@ class AXION_APPLICATION {
 		
 		ob_end_clean ();
 		
-		$render->output();
+		$render->display();
 		
+		$cache = AXION_CACHE::getInstance('memcached');
+		$cache->setOptions('section','session');
 		//echo $extOutput;
 	}
 	

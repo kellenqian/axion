@@ -20,14 +20,18 @@ Class AXION_RENDER{
 			default:
 				throw new AXION_EXCEPTION('找不到对应的渲染器');
 		}
+		
+		if(!$this->render instanceof AXION_INTERFACE_RENDER ){
+			throw new AXION_EXCEPTION('非法的渲染器');
+		}
 	}
 	
-	public function getRentData(){
-		return $this->render->getResult();
+	public function fetch(){
+		return $this->render->fetch();
 	}
 	
-	public function output(){
-		echo $this->getRentData();
+	public function display(){
+		echo $this->fetch();
 	}
 }
 ?>
