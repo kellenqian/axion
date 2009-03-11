@@ -55,7 +55,7 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php
  * @package     FirePHP
  */
-class AXION_UTIL_FIREBUG {
+class AXION_UTIL_FIREPHP {
   
   /**
    * FirePHP version
