@@ -62,8 +62,8 @@ class Axion {
 		/**
 		 * 检测PHP版本，必须高于5.2.0
 		 */
-		if (substr ( PHP_VERSION, 0, 3 ) < 5.2)
-			exit ( 'Axion Framework Requires PHP Version 5.2.x' );
+		if(version_compare(PHP_VERSION,'5.2.0','<') )
+			exit ( 'Axion Framework Requires PHP Version >= 5.2' );
 		
 		/**
 		 * 记录程序开始执行的时间点
@@ -90,9 +90,9 @@ class Axion {
 		 * 定义框架当前请求方式
 		 */
 		$requestMethod = 'html';
-		if(PHP_SAPI == 'cli')
+		if (PHP_SAPI == 'cli')
 			$requestMethod = 'cli';
-		define('REQUEST_METHOD',$requestMethod);
+		define ( 'REQUEST_METHOD', $requestMethod );
 		
 		/**
 		 * 判断是否可以使用共享内存
@@ -122,7 +122,7 @@ class Axion {
 		 * 定义当前AXION所在路径
 		 */
 		if (! defined ( 'AXION_PATH' )) {
-			define ( 'AXION_PATH', dirname ( __FILE__ ) );
+			define ( 'AXION_PATH', realpath ( dirname ( __FILE__ ) ) );
 		}
 		
 		/**
@@ -158,7 +158,6 @@ class Axion {
 		require AXION_PATH . DS . 'lib' . DS . 'axion' . DS . 'config.class.php';
 		require AXION_PATH . DS . 'lib' . DS . 'axion' . DS . 'application.class.php';
 		
-		
 		/**
 		 * 注册默认异常处理函数
 		 */
@@ -172,7 +171,7 @@ class Axion {
 		/**
 		 * 加载框架缓存文件
 		 */
-		self::loadCachedClass();
+		self::loadCachedClass ();
 		
 		/**
 		 * 记录框架初始化完成时间 
@@ -194,19 +193,17 @@ class Axion {
 	 *
 	 */
 	private static function loadCachedClass() {
-		if(AXION_CONFIG::GET('axion.debug.level') == 1)
-			return ;
+		if (AXION_CONFIG::GET ( 'axion.debug.level' ) == 1)
+			return;
 		
-		if(REQUEST_METHOD != 'cli')
-			$prefix = $_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : '';
+		if (REQUEST_METHOD != 'cli')
+			$prefix = $_SERVER ['HTTP_HOST'] ? $_SERVER ['HTTP_HOST'] : '';
 		else
-			$prefix = join('_',$_SERVER['argv']);
-			
-		$url = $prefix.$_SERVER['PHP_SELF'];
-		$urlHash = md5($url);
-		$cacheFile = TEMP_PATH . DS . 'axion_' . 
-					 md5(APPLICATION_PATH) . DS . 
-					 'codecache' . DS . $urlHash . '.php';
+			$prefix = join ( '_', $_SERVER ['argv'] );
+		
+		$url = $prefix . $_SERVER ['PHP_SELF'];
+		$urlHash = md5 ( $url );
+		$cacheFile = TEMP_PATH . DS . 'axion_' . md5 ( APPLICATION_PATH ) . DS . 'codecache' . DS . $urlHash . '.php';
 		
 		self::$load_cache_file = $cacheFile;
 		if (file_exists ( $cacheFile )) {

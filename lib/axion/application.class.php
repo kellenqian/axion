@@ -111,6 +111,11 @@ class AXION_APPLICATION {
 		}
 		
 		/**
+		 * 开启SESSION支持
+		 */
+		//session_start();//@todo 暂时开启默认SESSION支持，回头需要变成自定义版本
+		
+		/**
 		 * 设置时区
 		 */
 		date_default_timezone_set ( AXION_CONFIG::get ( 'axion.misc.timezone' ) );
@@ -162,9 +167,7 @@ class AXION_APPLICATION {
 		
 		$render->display();
 		
-		$cache = AXION_CACHE::getInstance('memcached');
-		$cache->setOptions('section','session');
-		//echo $extOutput;
+		echo $extOutput;
 	}
 	
 	/**

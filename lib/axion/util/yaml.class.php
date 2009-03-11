@@ -1,34 +1,5 @@
 <?php
-/**
-   * Spyc -- A Simple PHP YAML Class
-   * @version 0.3
-   * @author Chris Wanstrath <chris@ozmm.org>
-   * @author Vlad Andersen <vlad@oneiros.ru>
-   * @link http://spyc.sourceforge.net/
-   * @copyright Copyright 2005-2006 Chris Wanstrath
-   * @license http://www.opensource.org/licenses/mit-license.php MIT License
-   * @package Spyc
-   */
-/**
-   * The Simple PHP YAML Class.
-   *
-   * This class can be used to read a YAML file and convert its contents
-   * into a PHP array.  It currently supports a very limited subsection of
-   * the YAML spec.
-   *
-   * Usage:
-   * <code>
-   *   $parser = new Spyc;
-   *   $array  = $parser->load($file);
-   * </code>
-   * @package Spyc
-   */
 class AXION_UTIL_YAML {
-
-  /**#@+
-  * @access private
-  * @var mixed
-  */
   private $_haveRefs;
   private $_allNodes;
   private $_allParent;
@@ -46,107 +17,31 @@ class AXION_UTIL_YAML {
   private $LiteralPlaceHolder = '___YAML_Literal_Block___';
   private $SavedGroups = array();
 
-  /**#@+
-  * @access public
-  * @var mixed
-  */
+ 
   public $_nodeId;
 
-  /**
-     * Load YAML into a PHP array statically
-     *
-     * The load method, when supplied with a YAML stream (string or file),
-     * will do its best to convert YAML in a file into a PHP array.  Pretty
-     * simple.
-     *  Usage:
-     *  <code>
-     *   $array = Spyc::YAMLLoad('lucky.yaml');
-     *   print_r($array);
-     *  </code>
-     * @access public
-     * @return array
-     * @param string $input Path of YAML file or string containing YAML
-     */
+  
   public static function YAMLLoad($input) {
     $Spyc = new AXION_UTIL_YAML;
     return $Spyc->load($input);
   }
 
-  /**
-     * Load a string of YAML into a PHP array statically
-     *
-     * The load method, when supplied with a YAML string, will do its best 
-     * to convert YAML in a string into a PHP array.  Pretty simple.
-     *
-     * Note: use this function if you don't want files from the file system
-     * loaded and processed as YAML.  This is of interest to people concerned
-     * about security whose input is from a string.
-     *
-     *  Usage:
-     *  <code>
-     *   $array = Spyc::YAMLLoadString("---\n0: hello world\n");
-     *   print_r($array);
-     *  </code>
-     * @access public
-     * @return array
-     * @param string $input String containing YAML
-     */
+  
   public static function YAMLLoadString($input) {
     $Spyc = new Spyc;
     return $Spyc->loadString($input);
   }
 
-  /**
-     * Dump YAML from PHP array statically
-     *
-     * The dump method, when supplied with an array, will do its best
-     * to convert the array into friendly YAML.  Pretty simple.  Feel free to
-     * save the returned string as nothing.yaml and pass it around.
-     *
-     * Oh, and you can decide how big the indent is and what the wordwrap
-     * for folding is.  Pretty cool -- just pass in 'false' for either if
-     * you want to use the default.
-     *
-     * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
-     * you can turn off wordwrap by passing in 0.
-     *
-     * @access public
-     * @return string
-     * @param array $array PHP array
-     * @param int $indent Pass in false to use the default, which is 2
-     * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
-     */
+  
   public static function YAMLDump($array,$indent = false,$wordwrap = false) {
     $spyc = new Spyc;
     return $spyc->dump($array,$indent,$wordwrap);
   }
 
 
-  /**
-     * Dump PHP array to YAML
-     *
-     * The dump method, when supplied with an array, will do its best
-     * to convert the array into friendly YAML.  Pretty simple.  Feel free to
-     * save the returned string as tasteful.yaml and pass it around.
-     *
-     * Oh, and you can decide how big the indent is and what the wordwrap
-     * for folding is.  Pretty cool -- just pass in 'false' for either if
-     * you want to use the default.
-     *
-     * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
-     * you can turn off wordwrap by passing in 0.
-     *
-     * @access public
-     * @return string
-     * @param array $array PHP array
-     * @param int $indent Pass in false to use the default, which is 2
-     * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
-     */
+  
   public function dump($array,$indent = false,$wordwrap = false) {
-    // Dumps to some very clean YAML.  We'll have to add some more features
-    // and options soon.  And better support for folding.
-
-    // New features and options.
+   
     if ($indent === false or !is_numeric($indent)) {
       $this->_dumpIndent = 2;
     } else {
@@ -169,14 +64,7 @@ class AXION_UTIL_YAML {
     return $string;
   }
 
-  /**
-     * Attempts to convert a key / value array item to YAML
-     * @access private
-     * @return string
-     * @param $key The name of the key
-     * @param $value The value of the item
-     * @param $indent The indent of the current node
-     */
+  
   private function _yamlize($key,$value,$indent) {
     if (is_array($value)) {
       // It has children.  What to do?
@@ -193,13 +81,7 @@ class AXION_UTIL_YAML {
     return $string;
   }
 
-  /**
-     * Attempts to convert an array to YAML
-     * @access private
-     * @return string
-     * @param $array The array you want to convert
-     * @param $indent The indent of the current level
-     */
+ 
   private function _yamlizeArray($array,$indent) {
     if (is_array($array)) {
       $string = '';
@@ -212,14 +94,7 @@ class AXION_UTIL_YAML {
     }
   }
 
-  /**
-     * Returns YAML from a key and a value
-     * @access private
-     * @return string
-     * @param $key The name of the key
-     * @param $value The value of the item
-     * @param $indent The indent of the current node
-     */
+ 
   private function _dumpNode($key,$value,$indent) {
     // do some folding here, for blocks
     if (strpos($value,"\n") !== false || strpos($value,": ") !== false || strpos($value,"- ") !== false) {
@@ -245,13 +120,7 @@ class AXION_UTIL_YAML {
     return $string;
   }
 
-  /**
-     * Creates a literal block for dumping
-     * @access private
-     * @return string
-     * @param $value
-     * @param $indent int The value of the indent
-     */
+ 
   private function _doLiteralBlock($value,$indent) {
     $exploded = explode("\n",$value);
     $newValue = '|';
@@ -263,12 +132,7 @@ class AXION_UTIL_YAML {
     return $newValue;
   }
 
-  /**
-     * Folds a string of text, if necessary
-     * @access private
-     * @return string
-     * @param $value The string you wish to fold
-     */
+  
   private function _doFolding($value,$indent) {
     // Don't do anything if wordwrap is set to 0
     if ($this->_dumpWordWrap === 0) {
@@ -390,12 +254,7 @@ class AXION_UTIL_YAML {
 
   }
 
-  /**
-     * Finds the type of the passed value, returns the value as the new type.
-     * @access private
-     * @param string $value
-     * @return mixed
-     */
+  
   private function _toType($value) {
     $is_quoted = false;
     do {
@@ -473,17 +332,9 @@ class AXION_UTIL_YAML {
     return $value;
   }
 
-  /**
-     * Used in inlines to check for more inlines or quoted strings
-     * @access private
-     * @return array
-     */
+  
   private function _inlineEscape($inline) {
-    // There's gotta be a cleaner way to do this...
-    // While pure sequences seem to be nesting just fine,
-    // pure mappings and mappings with sequences inside can't go very
-    // deep.  This needs to be fixed.
-
+  
     $saved_strings = array();
 
     // Check for strings

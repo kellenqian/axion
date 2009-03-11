@@ -1,20 +1,20 @@
 <?php
-class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER, AXION_INTERFACE_RUNNABLE {
+abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER, AXION_INTERFACE_RUNNABLE {
 	private $context = array ();
-	protected $responseTo;
+	private $responseTo;
 	
 	public function __call($name, $arguments) {
 		//省的IDE总出讨厌的黄色下划线……
 		$arguments;
 		$name;
-		return $this->actionNotFound ( );
+		return $this->actionNotFound ();
 	}
 	
-	public function __set($name, $value) {
+	final public function __set($name, $value) {
 		$this->context [$name] = $value;
 	}
 	
-	public function __get($name) {
+	final public function __get($name) {
 		return $this->context [$name];
 	}
 	
@@ -51,7 +51,22 @@ class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER, AXION_INTERFACE_RU
 		}
 	}
 	
+	final protected function flash($key, $value = '') {
+		if (! $value) {
+			if (isset ( $_SESSION ['_flash'] )) {
+				return $_SESSION ['_flash'] [$key];
+			}else{
+				return false;
+			}
+		}
+		$_SESSION ['_flash'] [$key] = $value;
+	}
+	
 	public function run() {
+	
+	}
+	
+	public function __destruct() {
 	
 	}
 }

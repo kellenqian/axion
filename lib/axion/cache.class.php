@@ -32,7 +32,6 @@ class AXION_CACHE {
 		
 		if($instance instanceof AXION_INTERFACE_CACHE){
 			$config = AXION_CONFIG::get('axion.cache');
-			p($config);
 			$instance->setOptions($config);
 			return $instance;
 		}else{

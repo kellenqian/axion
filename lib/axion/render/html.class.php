@@ -21,6 +21,10 @@ class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
 		$path = get_class ( $this->ctrlInstance );
 		$file = $this->parseTemplatePath ( $path );
 		
+		if(!file_exists(APP_TEMPLATE_PATH . DS .$file)){
+			throw new AXION_EXCEPTION('没有找到模板文件');
+		}
+		
 		foreach ( $this->context as $k => $v ) {
 			$this->templateInstance->assign ( $k, $v );
 		}

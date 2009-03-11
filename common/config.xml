@@ -25,14 +25,16 @@
 			</deployment>
 		</databases>
 		<memcached>
-			<application>
-				<host>localhost</host>
+			<servers>
+				<host>192.168.0.200</host>
 				<port>11211</port>
-			</application>
-			<session>
-				<host>localhost</host>
+				<weight>1</weight>
+			</servers>
+			<servers>
+				<host>192.168.0.3</host>
 				<port>11211</port>
-			</session>
+				<weight>2</weight>
+			</servers>
 		</memcached>
 	</connections>
 	<dispatcher>
