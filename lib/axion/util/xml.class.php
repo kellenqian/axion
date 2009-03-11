@@ -92,7 +92,7 @@
 		/**
 		 * 构造函数
 		 *
-		 * @param object $obj_processStatus
+		 * @param object $obj_log
 		 * @return true
 		 */
 		function __construct( )

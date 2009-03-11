@@ -70,7 +70,7 @@
 	{	
 		protected $str_tableName;
 		
-		protected $obj_Axion_Axion_ProcessStatus;
+		protected $obj_Axion_Axion_log;
 		
 		/**
 		 * 用于存储结果及映射的数据对象
@@ -91,7 +91,7 @@
 			
 			$this->str_tableName = $str_tableName;
 			$this->obj_MySQL = Axion_db_MySQL::_init();
-			$this->obj_Axion_ProcessStatus = Axion_ProcessStatus::_init();
+			$this->obj_Axion_log = Axion_log::_init();
 			if( !class_exists( $this->str_tableName ) )
 			{
 				if( !file_exists( "./lib/model/{$this->str_tableName}.class.php" ) )
@@ -127,7 +127,7 @@
 					{
 						if( empty( $_void_param ) )
 						{
-							$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, '缺少必要的参数' );
+							$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, '缺少必要的参数' );
 							return false;
 						}//if
 						array_unshift( $arr_paras, $_void_param );
@@ -154,7 +154,7 @@
 					return $_void_result;
 					
 				default :
-					$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, '参数解析错误' );
+					$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, '参数解析错误' );
 					return false;
 			}//switch
 		}//end function __call
@@ -177,7 +177,7 @@
 						$_void_result = $this->getDataByID( $_void_param );
 					else 
 					{
-						$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, '参数格式错误' );
+						$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, '参数格式错误' );
 						return false;
 					}
 					return $_void_result;
@@ -196,7 +196,7 @@
 					return $_void_result;
 					
 				default :
-					$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, '参数解析错误' );
+					$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, '参数解析错误' );
 					return false;
 			}//switch
 		}//end function __get
@@ -245,7 +245,7 @@
 			//未获得查询结果
 			if( empty( $_void_result ) )
 			{
-				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_NOTICE , "未获得符合条件的数据，By SQL query >>> [{$_str_SQLQuery}] 。" );
+				$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_NOTICE , "未获得符合条件的数据，By SQL query >>> [{$_str_SQLQuery}] 。" );
 				return false;
 			}//if
 			

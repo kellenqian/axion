@@ -24,7 +24,7 @@
 	☆		重写程序使之支持新框架AXION						☆
 	☆															☆
 	***********************************************/ 	
-	class Axion_ProcessStatus 
+	class Axion_log
 	{
 		protected static $obj_this;
 		
@@ -105,12 +105,12 @@
 		 */
 		static function _init()
 		{
-			 if( Axion_ProcessStatus::$obj_this )
-			 	return Axion_ProcessStatus::$obj_this;
+			 if( self::$obj_this )
+			 	return self::$obj_this;
 			 else 
-			 	Axion_ProcessStatus::$obj_this = new Axion_ProcessStatus();
+			 	self::$obj_this = new self();
 			 	
-			 return Axion_ProcessStatus::$obj_this;
+			 return self::$obj_this;
 		}//end function _init
 		
 		/**
@@ -123,7 +123,7 @@
 		public function newMessage( $int_lv , $str_result = null )
 		{
 			if( empty( $this->ARR_ERR_LV[ $int_lv ] ) )
-				trigger_error( "无效的异常等级编号。" , Axion_ProcessStatus::$INT_ERR_ERROR );
+				trigger_error( "无效的异常等级编号。" , self::$INT_ERR_ERROR );
 				
 			if( is_null( $str_result ) )
 				$str_result = '';
@@ -133,7 +133,7 @@
 													 'str_result' => "{$this->ARR_ERR_LV[ $int_lv ]}:{$str_result}",
 													 'str_msg' => $str_result );
 													 
-			if( $int_lv > Axion_ProcessStatus::$INT_ERR_NOTICE )
+			if( $int_lv > self::$INT_ERR_NOTICE )
 				$this->bool_isNice = false;
 				
 			if( $int_lv > $this->int_maxErrLv )

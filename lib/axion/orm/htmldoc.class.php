@@ -301,8 +301,8 @@
 				if( isset( $this->arr_bill[$str_key] ) )
 					return $this->arr_bill[$str_key];
 					
-				$_obj_processStatus = ProcessStatus::_init();
-				$_obj_processStatus->newMessage( ProcessStatus::$INT_ERR_WARNING, '未定义的标签数据' );
+				$_obj_log = log::_init();
+				$_obj_log->newMessage( log::$INT_ERR_WARNING, '未定义的标签数据' );
 				return false;
 			}//else
 		}//end function getForm

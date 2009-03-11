@@ -29,9 +29,9 @@
 		/**
 		 * 消息池对象实例
 		 *
-		 * @var Axion_ProcessStatus
+		 * @var Axion_log
 		 */
-		protected $obj_Axion_ProcessStatus;
+		protected $obj_Axion_log;
 		
 		/**
 		 * 数据库对象实例
@@ -53,7 +53,7 @@
 				$str_keyName = substr( $this->str_tableName, 2 ) . '_ID';
 			$this->str_keyName = $str_keyName;
 			
-			$this->obj_Axion_ProcessStatus = Axion_ProcessStatus::_init();
+			$this->obj_Axion_log = Axion_log::_init();
 			
 			$this->arr_billFormat = array( 
 				//布尔
@@ -212,7 +212,7 @@
 			$_void_result = $this->obj_MySQL->querySQL( $_str_SQLQuery );
 			if( !$_void_result )
 			{
-				$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_ERROR, '未获得指定的数据表，请检查数据库结构是否完整' );
+				$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_ERROR, '未获得指定的数据表，请检查数据库结构是否完整' );
 				return false;
 			}
 			
@@ -309,7 +309,7 @@
 					break;
 					
 				default :
-					$this->obj_Axion_ProcessStatus->newMessage( Axion_ProcessStatus::$INT_ERR_WARNING, "未定义的字段类型{$_str_type}" );
+					$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, "未定义的字段类型{$_str_type}" );
 					return false;
 			}
 			
