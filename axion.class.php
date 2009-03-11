@@ -62,7 +62,7 @@ class Axion {
 		/**
 		 * 检测PHP版本，必须高于5.2.0
 		 */
-		if(version_compare(PHP_VERSION,'5.2.0','<') )
+		if (version_compare ( PHP_VERSION, '5.2.0', '<' ))
 			exit ( 'Axion Framework Requires PHP Version >= 5.2' );
 		
 		/**
@@ -85,6 +85,44 @@ class Axion {
 		 * 定义当前操作系统类型(估计没人会用除了这两种以外的系统吧)
 		 */
 		define ( 'OS', DS == '\\' ? 'windows' : 'linux' );
+		
+		/**
+		 * 定义客户端浏览器版本
+		 */
+		$agent = strtolower ( $_SERVER ['HTTP_USER_AGENT'] );
+		
+		switch ($agent) {
+			case ( bool ) strpos ( $agent, 'msie 6' ) :
+				$browser = 'msie6';
+				break;
+			case ( bool ) strpos ( $agent, 'msie 7' ) :
+				$browser = 'msie7';
+				break;
+			case ( bool ) strpos ( $agent, 'msie 8' ) :
+				$browser = 'msie8';
+				break;
+			case ( bool ) strpos ( $agent, 'firefox' ) :
+				$browser = 'firefox';
+				break;
+			case ( bool ) strpos ( $agent, 'chrome' ) :
+				$browser = 'chrome';
+				break;
+			case ( bool ) strpos ( $agent, 'safari' ) :
+				$browser = 'safari';
+				break;
+			case ( bool ) strstr ( $agent, 'opera' ) :
+				$browser = 'opera';
+				break;
+			default :
+				$browser = 'unknow';
+		}
+		define ( 'BROWSER', $browser );
+		
+		/**
+		 * 定义当前浏览器为FIREFOX时是否安装了FIREPHP扩展
+		 */
+		$isFIREPHP = (strpos ( $agent, 'firefox' ) && strpos ( $agent, 'firephp' )) ? true :false;
+		define ( 'IS_FIREPHP', $isFIREPHP );
 		
 		/**
 		 * 定义框架当前请求方式

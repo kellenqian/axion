@@ -2,6 +2,7 @@
 <axion>
 	<debug>
 		<level>1</level>
+		<usefirephp>1</usefirephp>
 	</debug>
 	<connections>
 		<databases>
