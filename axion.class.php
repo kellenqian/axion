@@ -186,6 +186,11 @@ class Axion {
 		self::addIncludePath ( AXION_LIB_PATH );
 		
 		/**
+		 * 加载AXION基础常量库
+		 */
+		require AXION_PATH . DS . 'common/defines.php';
+		
+		/**
 		 * 加载AXION基础函数库
 		 */
 		require AXION_PATH . DS . 'common/functions.php';
