@@ -147,7 +147,7 @@ class AXION_UTIL_FIREPHP {
   /**
    * Singleton instance of FirePHP
    *
-   * @var FirePHP
+   * @var AXION_UTIL_FIREPHP
    */
   protected static $instance = null;
   
@@ -209,7 +209,7 @@ class AXION_UTIL_FIREPHP {
    * Gets singleton instance of FirePHP
    *
    * @param boolean $AutoCreate
-   * @return FirePHP
+   * @return AXION_UTIL_FIREPHP
    */
   public static function getInstance($AutoCreate=false) {
     if($AutoCreate===true && !self::$instance) {
@@ -221,7 +221,7 @@ class AXION_UTIL_FIREPHP {
   /**
    * Creates FirePHP object and stores it for singleton access
    *
-   * @return FirePHP
+   * @return AXION_UTIL_FIREPHP
    */
   public static function init() {
     return self::$instance = new self();

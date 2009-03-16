@@ -92,11 +92,13 @@ class AXION_APPLICATION {
 		define ( 'VIEW_CACHE_PATH', TEMP_PATH . DS . 'axion_' . $this->uniqueId . DS . 'viewcache' );
 		define ( 'CODE_CACHE_PATH', TEMP_PATH . DS . 'axion_' . $this->uniqueId . DS . 'codecache' );
 		
-		
 		/**
 		 * 定义应用程序各个库路径常量
 		 */
-		define('APP_TEMPLATE_PATH',APPLICATION_PATH . DS . 'lib' . DS . 'template');
+		define ( 'APP_CONTROLLER_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'controller' );
+		define ( 'APP_MODEL_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'model' );
+		define ( 'APP_TEMPLATE_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'template' );
+		define ( 'APP_ORM_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'orm' );
 		
 		/**
 		 * 创建应用程序所需的临时文件目录
@@ -115,6 +117,7 @@ class AXION_APPLICATION {
 		 */
 		//session_start();//@todo 暂时开启默认SESSION支持，回头需要变成自定义版本
 		
+
 		/**
 		 * 设置时区
 		 */
@@ -147,8 +150,8 @@ class AXION_APPLICATION {
 		//实例化控制器对象
 		$instance = new $appClass ( );
 		
-		if(!$instance->responseTo()){
-			$instance->responseTo(REQUEST_METHOD);
+		if (! $instance->responseTo ()) {
+			$instance->responseTo ( REQUEST_METHOD );
 		}
 		
 		if (! $instance instanceof AXION_CONTROLLER) {
@@ -156,18 +159,24 @@ class AXION_APPLICATION {
 		}
 		
 		//执行action
-		$instance->run();
+		$instance->run ();
 		
 		//实例化渲染器对象
-		$render = new AXION_RENDER($instance);
+		$render = new AXION_RENDER ( $instance );
 		
 		$extOutput = ob_get_contents ();
 		
 		ob_end_clean ();
 		
-		$render->display();
+		$render->display ();
 		
 		echo $extOutput;
+		
+		$firephp = AXION_UTIL_FIREPHP::getInstance(true);
+		$firephp->group('g1');
+		$firephp->log('sdfsdf');
+		$firephp->log('sdfsdfsdfsdf');
+		$firephp->groupEnd();
 	}
 	
 	/**
