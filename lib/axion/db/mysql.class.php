@@ -131,13 +131,13 @@ class Axion_db_MySQL extends Axion_db_Database {
 	protected function connect() {
 		$this->hd_connect = mysql_connect ( $this->str_host . ":" . $this->int_port, $this->str_user, $this->str_password, true );
 		if (! $this->hd_connect) {
-			$this->obj_Axion_log->newMessage ( Axion_log::$INT_ERR_ERROR, "与数据库{$this->str_host}连接失败。" );
+			$this->obj_Axion_log->newMessage ( "与数据库{$this->str_host}连接失败。" , Axion_log::ERROR );
 			return false;
 		} //if
 		
 
 		if (! @mysql_selectdb ( $this->str_db, $this->hd_connect )) {
-			$this->obj_Axion_log->newMessage ( Axion_log::$INT_ERR_ERROR, "打开数据库{$this->str_host}.{$this->str_db}失败。" );
+			$this->obj_Axion_log->newMessage ( "打开数据库{$this->str_host}.{$this->str_db}失败。" ,Axion_log::ERROR);
 			return false;
 		} //if
 		
@@ -218,7 +218,7 @@ class Axion_db_MySQL extends Axion_db_Database {
 			$_str_sql = "ROLLBACK";
 		
 		if (! $this->querySQL ( $_str_sql )) {
-			$this->obj_Axion_log->newMessage ( Axion_log::$INT_ERR_ERROR, '在进行数据提交/撤销时发生异常。' );
+			$this->obj_Axion_log->newMessage ('在进行数据提交/撤销时发生异常。' ,  Axion_log::ERROR );
 			return false;
 		} //if
 		
@@ -237,7 +237,7 @@ class Axion_db_MySQL extends Axion_db_Database {
 		$bool_autoCommitSet ? $_int_autoCommitSet = 1 : $_int_autoCommitSet = 0;
 		$_str_sql = "SET AUTOCOMMIT = {$_int_autoCommitSet}";
 		if (! $this->querySQL ( $_str_sql )) {
-			$this->obj_Axion_log->newMessage ( Axion_log::$INT_ERR_NOTICE, "数据库发生异常，已将连接关闭。" );
+			$this->obj_Axion_log->newMessage ( "数据库发生异常，已将连接关闭。" ,Axion_log::NOTICE);
 			$this->unconnect ();
 			return false;
 		} //if
@@ -256,7 +256,7 @@ class Axion_db_MySQL extends Axion_db_Database {
 		$_str_sql = "SELECT LAST_INSERT_ID() AS INT_ID";
 		$_void_resutl = $this->querySQL ( $_str_sql );
 		if (! $_void_resutl) {
-			$this->obj_Axion_log->newMessage ( Axion_log::$INT_ERR_NOTICE, '尝试获取最后一次插入的记录的主键值失败。' );
+			$this->obj_Axion_log->newMessage ( '尝试获取最后一次插入的记录的主键值失败。' ,Axion_log::$INT_ERR_NOTICE);
 			return false;
 		} //if
 		
@@ -274,7 +274,7 @@ class Axion_db_MySQL extends Axion_db_Database {
 		$_str_sql = "SELECT FOUND_ROWS() AS ROWS";
 		$_void_result = $this->querySQL ( $_str_sql );
 		if (empty ( $_void_result )) {
-			$this->obj_Axion_log->newMessage ( Axion_log::$INT_ERR_NOTICE, '获取所有符合提交的记录总数时发生了错误。' );
+			$this->obj_Axion_log->newMessage ( '获取所有符合提交的记录总数时发生了错误。',Axion_log::NOTICE );
 			return false;
 		} //if
 		
@@ -291,7 +291,7 @@ class Axion_db_MySQL extends Axion_db_Database {
 	public function getAffectedRows() {
 		$_void_result = @mysql_affected_rows ( $this->hd_connect );
 		if (! $_void_result) {
-			$this->obj_Axion_log->newMessage ( Axion_log::$INT_ERR_NOTICE, '获取最后一次数据库操作语句更新的记录数失败。' );
+			$this->obj_Axion_log->newMessage ( '获取最后一次数据库操作语句更新的记录数失败。' ,Axion_log::NOTICE);
 			return false;
 		} //if
 		
@@ -310,7 +310,7 @@ class Axion_db_MySQL extends Axion_db_Database {
 		//数据库连接检测
 		if (empty ( $this->hd_connect )) {
 			if (! $this->connect ()) {
-				$this->obj_Axion_log->newMessage ( Axion_log::$INT_ERR_ERROR, '数据库连接错误' );
+				$this->obj_Axion_log->newMessage ( '数据库连接错误',Axion_log::ERROR );
 				return false;
 			} //if
 		} //if
@@ -325,7 +325,7 @@ class Axion_db_MySQL extends Axion_db_Database {
 		if ($_void_result === false) {
 			$_arr_SQLHistory ['ok'] = false;
 			$this->bool_OK = false;
-			$this->obj_Axion_log->newMessage ( Axion_log::$INT_ERR_ERROR, @mysql_errno ( $this->hd_connect ) . @mysql_error ( $this->hd_connect ) . ' IN SQL ' . $str_sql );
+			$this->obj_Axion_log->newMessage ( mysql_errno ( $this->hd_connect ) . mysql_error ( $this->hd_connect ) . ' IN SQL ' . $str_sql , Axion_log::ERROR);
 			return false;
 		} else
 			$_arr_SQLHistory ['ok'] = true;

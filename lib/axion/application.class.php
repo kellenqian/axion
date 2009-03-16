@@ -174,14 +174,6 @@ class AXION_APPLICATION {
 		ob_end_clean ();
 		
 		$render->display ();
-		
-		echo $extOutput;
-		
-		$firephp = AXION_UTIL_FIREPHP::getInstance(true);
-		$firephp->group('g1');
-		$firephp->log('sdfsdf');
-		$firephp->log('sdfsdfsdfsdf');
-		$firephp->groupEnd();
 	}
 	
 	/**

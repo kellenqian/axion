@@ -42,6 +42,10 @@
  * @package     FirePHP
  */
  
+
+/**
+ * MODIFIED BY TECHUA.COM
+ */
  
 /**
  * Sends the given data to the FirePHP Firefox Extension.
@@ -800,10 +804,10 @@ class AXION_UTIL_FIREPHP {
    * Returns a new exception
    *
    * @param string $Message
-   * @return Exception
+   * @return AXION_Exception
    */
   protected function newException($Message) {
-    return new Exception($Message);
+    return new AXION_Exception($Message);
   }
   
   /**
