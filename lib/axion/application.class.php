@@ -101,6 +101,11 @@ class AXION_APPLICATION {
 		define ( 'APP_ORM_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'orm' );
 		
 		/**
+		 * ORM数据表结构映射文件存储路径
+		 */
+		define ( 'APP_ORM_MAP_PATH', APPLICATION_PATH . DS . 'orm' );
+		
+		/**
 		 * 创建应用程序所需的临时文件目录
 		 */
 		/**@todo 是否移除这部分的判断一次性完成？ **/

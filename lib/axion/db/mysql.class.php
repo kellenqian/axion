@@ -111,7 +111,7 @@ class Axion_db_MySQL extends Axion_db_Database {
 	 * @return array
 	 */
 	protected function getInitConfig() {
-		$_arr_ini = array ('hostname' => 'localhost', 'port' => '3306', 'user' => 'root', 'password' => 'kellenqian!@#', 'database' => 'cityjiajunew', 'autocommit' => false );
+		$_arr_ini = array ('hostname' => 'localhost', 'port' => '3306', 'user' => 'root', 'password' => '123456', 'database' => 'test', 'autocommit' => false );
 		
 		$this->str_host = $_arr_ini ['hostname'];
 		$this->int_port = $_arr_ini ['port'];
