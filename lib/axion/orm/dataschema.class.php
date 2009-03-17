@@ -64,7 +64,7 @@
 		{
 			if( !$arr_paraInfo )
 			{
-				$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, "请指定一个要验证的信息" );
+				$this->obj_Axion_log->newMessage( "请指定一个要验证的信息", Axion_log::WARNING );
 				return false;
 			}
 			
@@ -96,12 +96,12 @@
 		{
 			if( !AXION_UTIL_VALIDATE::checkInt( $arr_paraInfo['value'], $arr_paraInfo['maxLength'], $arr_paraInfo['minLength'] ) )
 			{
-				$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
+				$this->obj_Axion_log->newMessage( "'{$arr_paraInfo['name']}'格式错误。", Axion_log::WARNING );
 				return false;
 			}
 			else if( $arr_paraInfo['unsigned'] && ( $arr_paraInfo['value'] != abs( $arr_paraInfo['value'] ) ) )
 			{
-				$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
+				$this->obj_Axion_log->newMessage( "'{$arr_paraInfo['name']}'格式错误。", Axion_log::WARNING );
 				return false;
 			} //else if
 			
@@ -114,12 +114,12 @@
 		{
 			if( !checkFloat( $arr_paraInfo['value'], $arr_paraInfo['maxLength'], $arr_paraInfo['minLength'] ) )
 			{
-				$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
+				$this->obj_Axion_log->newMessage( "'{$arr_paraInfo['name']}'格式错误。", Axion_log::WARNING );
 				return false;
 			}
 			else if( $arr_paraInfo['unsigned'] && ($arr_paraInfo['value']!= abs( $arr_paraInfo['value'] ) ) )
 			{
-				$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
+				$this->obj_Axion_log->newMessage( "'{$arr_paraInfo['name']}'格式错误。", Axion_log::WARNING );
 				return false;
 			} //else if
 			
@@ -134,18 +134,18 @@
 			{
 				if( empty( $arr_paraInfo['defValue'] ) )
 				{
-					$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'不能为空。" );
+					$this->obj_Axion_log->newMessage( "'{$arr_paraInfo['name']}'不能为空。", Axion_log::WARNING );
 					return false;
 				} 
 				else
 				{
-					$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_NOTICE, "'{$arr_paraInfo['name']}'启用了默认值。" );
+					$this->obj_Axion_log->newMessage( "'{$arr_paraInfo['name']}'启用了默认值。", Axion_log::NOTICE );
 					$arr_paraInfo['value'] = $arr_paraInfo['defValue'];
 				}
 			} //if
 			elseif( !AXION_UTIL_VALIDATE::checkString( $arr_paraInfo['value'], $arr_paraInfo['maxLength'], $arr_paraInfo['minLength'], $arr_paraInfo['preg'] ) )
 			{
-				$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, "'{$arr_paraInfo['name']}'格式错误。" );
+				$this->obj_Axion_log->newMessage( "'{$arr_paraInfo['name']}'格式错误。", Axion_log::WARNING );
 				return false;
 			} //if
 			

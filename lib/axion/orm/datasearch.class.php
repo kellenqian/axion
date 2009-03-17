@@ -93,6 +93,7 @@
 			$this->str_tableName		= $str_tableName;
 			$this->obj_MySQL			= Axion_db_MySQL::_init();
 			$this->obj_Axion_log		= Axion_log::_init();
+			
 			if( !class_exists( $this->str_tableName ) )
 			{
 				if( !file_exists( APP_ORM_MAP_PATH . DS ."{$this->str_tableName}.class.php" ) )
@@ -127,7 +128,7 @@
 					else {
 						if( empty( $_void_param ) )
 						{
-							$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, '缺少必要的参数' );
+							$this->obj_Axion_log->newMessage( '缺少必要的参数', Axion_log::WARNING );
 							return false;
 						} //if
 						array_unshift( $arr_paras, $_void_param );
@@ -154,7 +155,7 @@
 					return $_void_result;
 				
 				default :
-					$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, '参数解析错误' );
+					$this->obj_Axion_log->newMessage( '参数解析错误', Axion_log::WARNING );
 					return false;
 			} //switch
 		} //end function __call
@@ -178,7 +179,7 @@
 						$_void_result = $this->getDataByID( $_void_param );
 					else
 					{
-						$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, '参数格式错误' );
+						$this->obj_Axion_log->newMessage( '参数格式错误', Axion_log::WARNING );
 						return false;
 					}
 					return $_void_result;
@@ -197,7 +198,7 @@
 					return $_void_result;
 				
 				default :
-					$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, '参数解析错误' );
+					$this->obj_Axion_log->newMessage( '参数解析错误', Axion_log::WARNING );
 					return false;
 			} //switch
 		} //end function __get
@@ -248,7 +249,7 @@
 			//未获得查询结果
 			if( empty( $_void_result ) )
 			{
-				$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_NOTICE, "未获得符合条件的数据，By SQL query >>>[{$_str_SQLQuery}]。" );
+				$this->obj_Axion_log->newMessage( "未获得符合条件的数据，By SQL query >>>[{$_str_SQLQuery}]。", Axion_log::NOTICE );
 				return false;
 			} //if
 			

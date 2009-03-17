@@ -83,7 +83,7 @@
 			$_void_result		= $_obj_MySQL->querySQL( $_str_SQLQuery );
 			if( !$_void_result )
 			{
-				Axion_log::_init()->newMessage( Axion_log::$INT_ERR_ERROR, "从指定的数据表{$str_tableName}中获取{$str_valueKey}的HTML子元素失败，如果不存在该数据表请给出{$str_valueKey}的MENU元素内容！" );
+				Axion_log::_init()->newMessage( "从指定的数据表{$str_tableName}中获取{$str_valueKey}的HTML子元素失败，如果不存在该数据表请给出{$str_valueKey}的MENU元素内容！", Axion_log::ERROR );
 				return false;
 			}
 			return $_void_result;
@@ -316,8 +316,7 @@
 				if( isset( $this->arr_bill[$str_key] ) )
 					return $this->arr_bill[$str_key];
 				
-				$_obj_log = log::_init();
-				$_obj_log->newMessage( log::$INT_ERR_WARNING, '未定义的标签数据' );
+				Axion_log::_init()->newMessage( '未定义的标签数据', Axion_log::WARNING );
 				return false;
 			} //else
 		} //end function getForm

@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * 根据数据表结构生成对应的映射文件
-	 * @desc 该文件保存在当前项目下的ORM目录中 使用“数据表名称”+“.class.php”作为文件命
+	 * @desc 该文件保存在当前项目下的lib/orm目录中 使用“数据表名称”+“.class.php”作为文件名
 	 * @author [Alone] alonedistian@gmail.com〗
 	 * @version 0.1
 	 * @package PHPDoc
@@ -162,7 +162,7 @@
 			$_void_result = $this->obj_MySQL->querySQL( $_str_SQLQuery );
 			if( !$_void_result )
 			{
-				$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_ERROR, '未获得指定的数据表，请检查数据库结构是否完整' );
+				$this->obj_Axion_log->newMessage( '未获得指定的数据表，请检查数据库结构是否完整', Axion_log::ERROR );
 				return false;
 			}
 			
@@ -187,7 +187,7 @@
 			{
 				if( ( int ) $_arr_result[1] == $_arr_result[1] )
 				{
-					$arr_info['maxLength'] = $_arr_result[1];
+					$arr_info['maxLength'] = $_arr_result[1] + 0;
 					$_str_type = substr( $_arr_result[0], 0, - 1 * strlen( $_arr_result[1] ) - 2 );
 				}
 				else{
@@ -205,11 +205,11 @@
 				case 'TINYINT' :
 					if( $arr_info['maxLength'] == 1 )
 					{
-						$arr_info = array_merge( $arr_info, $this->arr_billFormat[Axion_orm_DataMap::TYPE_BOOLEAN] );
+						$arr_info = array_merge( $this->arr_billFormat[Axion_orm_DataMap::TYPE_BOOLEAN], $arr_info );
 						$arr_info['type'] = Axion_orm_DataMap::TYPE_BOOLEAN;
 					} 
 					else
-						$arr_info = array_merge( $arr_info, $this->arr_billFormat[Axion_orm_DataMap::TYPE_INT] );
+						$arr_info = array_merge( $this->arr_billFormat[Axion_orm_DataMap::TYPE_INT], $arr_info );
 					break;
 				
 				/**
@@ -219,45 +219,45 @@
 				case 'MEDIUMINT' :
 				case 'INT' :
 				case 'BIGINT' :
-					$arr_info = array_merge( $arr_info, $this->arr_billFormat[Axion_orm_DataMap::TYPE_INT] );
+					$arr_info = array_merge( $this->arr_billFormat[Axion_orm_DataMap::TYPE_INT], $arr_info );
 					break;
 				
 				case 'TIMESTAMP' :
 					$arr_info['action'] = 'n';
 				case 'DATATIME' :
-					$arr_info = array_merge( $arr_info, $this->arr_billFormat[Axion_orm_DataMap::TYPE_DATE] );
+					$arr_info = array_merge( $this->arr_billFormat[Axion_orm_DataMap::TYPE_DATE], $arr_info );
 					break;
 				
 				case 'DATE' :
-					$arr_info = array_merge( $arr_info, $this->arr_billFormat[Axion_orm_DataMap::TYPE_STRING] );
+					$arr_info = array_merge( $this->arr_billFormat[Axion_orm_DataMap::TYPE_STRING], $arr_info );
 					$arr_info['maxLength'] = 10;
 					$arr_info['minLength'] = 10;
 					$arr_info['preg'] = REG_DATE;
 					break;
 				
 				case 'CHAR' :
-					$arr_info = array_merge( $arr_info, $this->arr_billFormat[Axion_orm_DataMap::TYPE_STRING] );
+					$arr_info = array_merge( $this->arr_billFormat[Axion_orm_DataMap::TYPE_STRING], $arr_info );
 					$arr_info['minLength'] = $arr_info['maxLength'];
 					break;
 				
 				case 'TEXT' :
 				case 'BLOB' :
-					$arr_info = array_merge( $arr_info, $this->arr_billFormat[Axion_orm_DataMap::TYPE_STRING] );
+					$arr_info = array_merge( $this->arr_billFormat[Axion_orm_DataMap::TYPE_STRING], $arr_info );
 					$arr_info['minLength'] = $arr_info['maxLength'] = null;
 					break;
 				
 				case 'ENUM' :
 				case 'SET' :
-					$arr_info = array_merge( $arr_info, $this->arr_billFormat[Axion_orm_DataMap::TYPE_STRING] );
+					$arr_info = array_merge( $this->arr_billFormat[Axion_orm_DataMap::TYPE_STRING], $arr_info );
 					$arr_info['enum'] = $_arr_enum;
 					$arr_info['vType'] = 'select';
 					break;
 				case 'VARCHAR' :
-					$arr_info = array_merge( $arr_info, $this->arr_billFormat[Axion_orm_DataMap::TYPE_STRING] );
+					$arr_info = array_merge( $this->arr_billFormat[Axion_orm_DataMap::TYPE_STRING], $arr_info );
 					break;
 				
 				default :
-					$this->obj_Axion_log->newMessage( Axion_log::$INT_ERR_WARNING, "未定义的字段类型{$_str_type}" );
+					$this->obj_Axion_log->newMessage( "未定义的字段类型{$_str_type}", Axion_log::WARNING );
 					return false;
 			}
 			

@@ -78,17 +78,18 @@ class AXION_CONFIG {
 		$packageTolower = strtolower ( $package );
 		$hashKey = null;
 		$hashKeyArray = array ();
+		
 		if (strpos ( $package, '.' )) {
 			$packageArray = explode ( '.', $packageTolower );
 			foreach ( $packageArray as $v ) {
 				$hashKeyArray [] = $v;
 				$hashKey = join ( '.', $hashKeyArray );
-				if (self::$locked [$hashKey]) {
+				if (isset(self::$locked [$hashKey])) {
 					return true;
 				}
 			}
-		} else {
-			if (self::$locked [$package]) {
+		} else {			
+			if (isset(self::$locked [$package])) {
 				return true;
 			}
 		}
@@ -118,7 +119,6 @@ class AXION_CONFIG {
 		if ($lock) {
 			self::lock ( $package );
 		}
-		
 		return true;
 	}
 	

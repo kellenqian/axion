@@ -82,7 +82,8 @@ class Axion_log {
 	 */
 	protected $int_maxErrLv = 2048;
 	
-	function __construct() {
+	function __construct()
+	{
 	} //end function __construct
 	
 
@@ -91,11 +92,12 @@ class Axion_log {
 	 *
 	 * @return ProcessStatus
 	 */
-	static function _init() {
-		if (self::$obj_this)
+	static function _init()
+	{
+		if( self::$obj_this )
 			return self::$obj_this;
 		else
-			self::$obj_this = new self ( );
+			self::$obj_this = new self();
 		
 		return self::$obj_this;
 	} //end function _init
@@ -108,24 +110,24 @@ class Axion_log {
 	 * @param string $str_result		错误提示信息
 	 * @return boolean
 	 */
-	public function newMessage($str_result = null, $level = self::INFO) {
-		if (empty ( $this->ARR_ERR_LV [$int_lv] ))
-			trigger_error ( "无效的异常等级编号。", self::ERROR );
+	public function newMessage( $str_result = null, $level = self::INFO )
+	{
+		if( empty( $this->ARR_ERR_LV[$int_lv] ) )
+			trigger_error( "无效的异常等级编号。", self::ERROR );
 		
-		if (is_null ( $str_result ))
+		if( is_null( $str_result ) )
 			$str_result = '';
 		
-		$this->arr_dataPool [] = array ('int_lv' => $int_lv, 'str_lv' => $this->ARR_ERR_LV [$int_lv], 'str_result' => "{$this->ARR_ERR_LV[ $int_lv ]}:{$str_result}", 'str_msg' => $str_result );
+		$this->arr_dataPool[] = array( 'int_lv' => $int_lv, 'str_lv' => $this->ARR_ERR_LV[$int_lv], 'str_result' => "{$this->ARR_ERR_LV[ $int_lv ]}:{$str_result}", 'str_msg' => $str_result );
 		
-		if ($int_lv > self::NOTICE)
+		if( $int_lv > self::NOTICE )
 			$this->bool_isNice = false;
 		
-		if ($int_lv > $this->int_maxErrLv)
+		if( $int_lv > $this->int_maxErrLv )
 			$this->int_maxErrLv = $int_lv;
 		
-		if (! is_null ( $this->int_extLv ) && $int_lv >= $this->int_extLv) {
-			$this->output ();
-		}
+		if( !is_null( $this->int_extLv ) && $int_lv >= $this->int_extLv )
+			$this->output();
 		
 		return true;
 	} //function setMessage
@@ -136,7 +138,8 @@ class Axion_log {
 	 *
 	 * @return boolean
 	 */
-	public function getState() {
+	public function getState()
+	{
 		return $this->bool_isNice;
 	} //function getState
 	
@@ -146,7 +149,8 @@ class Axion_log {
 	 *
 	 * @return int
 	 */
-	public function getMaxErrLv() {
+	public function getMaxErrLv()
+	{
 		return $this->int_maxErrLv;
 	} //function getMaxErrLv
 	
@@ -156,8 +160,9 @@ class Axion_log {
 	 *
 	 * @return string
 	 */
-	public function getMaxErrString() {
-		return $this->ARR_ERR_LV [$this->getMaxErrLv ()];
+	public function getMaxErrString()
+	{
+		return $this->ARR_ERR_LV[$this->getMaxErrLv()];
 	} //function getMaxErrString
 	
 
@@ -166,7 +171,8 @@ class Axion_log {
 	 *
 	 * @return array
 	 */
-	public function getMaxErr() {
+	public function getMaxErr()
+	{
 		return $this->h_maxError;
 	} //end function getMaxErr
 	
@@ -176,7 +182,8 @@ class Axion_log {
 	 *
 	 * @return array
 	 */
-	public function getAllData() {
+	public function getAllData()
+	{
 		return $this->arr_dataPool;
 	} //function getAllData
 	
@@ -186,12 +193,13 @@ class Axion_log {
 	 *
 	 * @return array
 	 */
-	public function getFullData() {
-		$arr_result = array ();
-		$arr_result ['sysOperateState'] = ($this->getState () ? 'True' : 'False'); //处理状态
-		$arr_result ['sysAlertLv'] = $this->getMaxErrLv (); //最高错误等级
-		$arr_result ['sysMsgString'] = $this->getAllMessage (); //完整信息提示
-		$arr_result ['sysMsgArray'] = $this->arr_dataPool; //错误消息完整内容
+	public function getFullData()
+	{
+		$arr_result								= array();
+		$arr_result['sysOperateState']	= ($this->getState() ? 'True' : 'False'); //处理状态
+		$arr_result['sysAlertLv']			= $this->getMaxErrLv(); //最高错误等级
+		$arr_result['sysMsgString']		= $this->getAllMessage(); //完整信息提示
+		$arr_result['sysMsgArray']			= $this->arr_dataPool; //错误消息完整内容
 		return $arr_result;
 	} //function getFullData
 	
@@ -202,15 +210,18 @@ class Axion_log {
 	 * @param integer $int_errorLevel  需要获取的最低错误等级
 	 * @return string
 	 */
-	public function getAllMessage($int_errorLevel = null) {
-		if (empty ( $this->arr_dataPool ))
+	public function getAllMessage( $int_errorLevel = null )
+	{
+		if( empty( $this->arr_dataPool ) )
 			return STR_TAG_EMPTY;
 		
 		$_str_result = '';
-		foreach ( $this->arr_dataPool as $arr_dataPoll ) {
-			if (is_null ( $int_errorLevel ) || $int_errorLevel <= $arr_dataPoll ['int_lv'])
+		foreach( $this->arr_dataPool as $arr_dataPoll )
+		{
+			if( is_null( $int_errorLevel ) || $int_errorLevel <= $arr_dataPoll['int_lv'] )
 				$_str_result .= "{$arr_dataPoll['str_msg']};";
 		} //foreach
+		
 		return $_str_result;
 	} //end function getAllMessage
 	
@@ -220,8 +231,9 @@ class Axion_log {
 	 *
 	 * @return array
 	 */
-	public function getLastMessage() {
-		return $this->arr_dataPool [count ( $this->arr_dataPool ) - 1];
+	public function getLastMessage()
+	{
+		return $this->arr_dataPool[count( $this->arr_dataPool ) - 1];
 	} //function getLastMessage
 	
 
@@ -230,9 +242,10 @@ class Axion_log {
 	 *
 	 * @return boolean
 	 */
-	public function clearMsg() {
-		$this->arr_dataPool = array ();
-		$this->bool_isNice = true;
+	public function clearMsg()
+	{
+		$this->arr_dataPool	= array();
+		$this->bool_isNice	= true;
 		return true;
 	} //function 
 	
@@ -241,7 +254,8 @@ class Axion_log {
 	 * 输出当前错误信息
 	 *
 	 */
-	public function output() {
+	public function output()
+	{
 	} //end function output
 }
 

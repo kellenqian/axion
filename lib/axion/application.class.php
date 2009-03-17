@@ -103,7 +103,7 @@ class AXION_APPLICATION {
 		/**
 		 * ORM数据表结构映射文件存储路径
 		 */
-		define ( 'APP_ORM_MAP_PATH', APPLICATION_PATH . DS . 'orm' );
+		define ( 'APP_ORM_MAP_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'orm' );
 		
 		/**
 		 * 创建应用程序所需的临时文件目录
@@ -174,6 +174,13 @@ class AXION_APPLICATION {
 		ob_end_clean ();
 		
 		$render->display ();
+		
+		echo $extOutput;
+//		$firephp = AXION_UTIL_FIREPHP::getInstance(true);
+//		$firephp->group('g1');
+//		$firephp->log('sdfsdf');
+//		$firephp->log('sdfsdfsdfsdf');
+//		$firephp->groupEnd();
 	}
 	
 	/**
