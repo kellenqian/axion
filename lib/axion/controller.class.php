@@ -2,6 +2,7 @@
 abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER, AXION_INTERFACE_RUNNABLE {
 	private $context = array ();
 	private $responseTo;
+	protected $str_templateFileName;
 	
 	public function __call($name, $arguments) {
 		//省的IDE总出讨厌的黄色下划线……
@@ -67,6 +68,16 @@ abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER, AXION_INT
 	public function run() {
 	
 	}
+	
+	public function setTpl( $str_templateFileName )
+	{
+		$this->str_templateFileName = $str_templateFileName;
+	}//end function setTpl
+	
+	public function getTpl()
+	{
+		return empty( $this->str_templateFileName ) ? false : $this->str_templateFileName;
+	}//end function getTpl
 	
 	public function __destruct() {
 	

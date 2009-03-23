@@ -18,7 +18,8 @@ class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
 	}
 	
 	public function fetch() {
-		$path = get_class ( $this->ctrlInstance );
+		if( !$path = $this->ctrlInstance->getTpl() )
+			$path = get_class ( $this->ctrlInstance );
 		$file = $this->parseTemplatePath ( $path );
 		
 		if(!file_exists(APP_TEMPLATE_PATH . DS .$file)){
