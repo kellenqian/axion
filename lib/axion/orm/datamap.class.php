@@ -208,6 +208,8 @@
 					//对于不参与新建操作的内容不做处理
 					if( $_arr_value['action'] != 'a' && $_arr_value['action'] != 'i' )
 						continue;
+					if( is_null( $_arr_value['value'] ) )
+						$_arr_value['value'] = $_arr_value['defValue'];
 				}
 				
 				//验证数据合法性				
@@ -224,22 +226,22 @@
 					/**
 					 * 验证参数是否允许重复
 					 */
-					if( $_arr_value['unique'] )
-					{
-						if( !$this->obj_MySQL)
-							$this->obj_MySQL = Axion_db_MySQL::_init();
-						$_str_SQLQuery = "SELECT * FROM `{$this->str_tableName}` WHERE `{$_str_key}` = '{$_arr_value['value']}' ";
-						//如果当前数据映射中存在索引主键则验证唯一键属性时忽略与该值的唯一性冲突
-						if( !is_null( $this->arr_bill[$this->str_primayKey]['value'] ) )
-							$_str_SQLQuery .= " AND `{$this->str_primayKey}` <> '{$this->arr_bill[$this->str_primayKey]['value']}' ";
-						
-						$_void_result = $this->obj_MySQL->querySQL( $_str_SQLQuery );
-						if( !empty( $_void_result ) )
-						{
-							$this->obj_Axion_log->newMessage( "已存在一个相同的{$this->arr_bill[$_str_key]['name']}。", Axion_log::WARNING );
-							return false;
-						} //if
-					} //if
+//					if( $_arr_value['unique'] )
+//					{
+//						if( !$this->obj_MySQL)
+//							$this->obj_MySQL = Axion_db_MySQL::_init();
+//						$_str_SQLQuery = "SELECT * FROM `{$this->str_tableName}` WHERE `{$_str_key}` = '{$_arr_value['value']}' ";
+//						//如果当前数据映射中存在索引主键则验证唯一键属性时忽略与该值的唯一性冲突
+//						if( !is_null( $this->arr_bill[$this->str_primayKey]['value'] ) )
+//							$_str_SQLQuery .= " AND `{$this->str_primayKey}` <> '{$this->arr_bill[$this->str_primayKey]['value']}' ";
+//						
+//						$_void_result = $this->obj_MySQL->querySQL( $_str_SQLQuery );
+//						if( !empty( $_void_result ) )
+//						{
+//							$this->obj_Axion_log->newMessage( "已存在一个相同的{$this->arr_bill[$_str_key]['name']}。", Axion_log::WARNING );
+//							return false;
+//						} //if
+//					} //if
 				} //else
 				
 	

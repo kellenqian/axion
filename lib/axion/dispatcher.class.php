@@ -15,7 +15,7 @@ Class AXION_DISPATCHER implements AXION_INTERFACE_DISPATCHER{
 			$pathinfoArray = $this->parsePathinfo($pathinfo);
 			$this->controller = $pathinfoArray['controller'];
 			$this->action     = $pathinfoArray['action'];
-			$this->params     = $pathinfoArray['params'];
+			$this->params     = empty( $pathinfoArray['params'] ) ? '' : $pathinfoArray['params'];
 		}
 	}
 	

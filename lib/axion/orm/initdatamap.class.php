@@ -266,7 +266,7 @@
 			
 			$arr_info['name']			= '';
 			$arr_info['unsigned']	= ( isset( $_arr_typeInfo[1] ) && $_arr_typeInfo[1] == 'unsigned' || $arr_info['Extra'] == 'auto_increment' ) ? true : false;
-			$arr_info['isNull']		= $arr_info['Null'] == 'NO' ? true : false;
+			$arr_info['isNull']		= $arr_info['Null'] == 'NO' ? false : true;
 			$arr_info['defValue']	= $arr_info['Default']? $arr_info['Default']: '';
 			
 			switch( strtoupper( $arr_info['Key'] ) ) 

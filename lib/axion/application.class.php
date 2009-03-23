@@ -144,7 +144,7 @@ class AXION_APPLICATION {
 		$params = $dispatcher->getParams ();
 		
 		$appClass = $params ['controller'] . '_' . $params ['action'];
-		
+
 		if (! class_exists ( $appClass )) {
 			throw new AXION_EXCEPTION ( '无法找到控制器' );
 		}

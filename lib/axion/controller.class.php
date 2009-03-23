@@ -15,7 +15,9 @@ abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER, AXION_INT
 	}
 	
 	final public function __get($name) {
-		return $this->context [$name];
+		if( isset( $this->context[$name] ) )
+			return $this->context [$name];
+		return false;
 	}
 	
 	public function __clone() {

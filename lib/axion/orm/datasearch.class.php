@@ -99,7 +99,8 @@
 				if( !file_exists( APP_ORM_MAP_PATH . DS ."{$this->str_tableName}.class.php" ) )
 				{
 					$_obj_initDataMap = new Axion_orm_InitDataMap( $this->str_tableName );
-					$_obj_initDataMap->createFile( APP_ORM_MAP_PATH . DS );
+					if( !$_obj_initDataMap->createFile( APP_ORM_MAP_PATH . DS ) )
+						throw new AXION_EXCEPTION( "无法生成数据表结构映射文件{$this->str_tableName}.class.php", E_ERROR );
 				}
 				require_once( APP_ORM_MAP_PATH . DS ."{$this->str_tableName}.class.php");
 			}
@@ -123,7 +124,7 @@
 				//获取指定编号信息
 				case 'get' :
 					//使用数字参数则获取默认索引列为该值的1条数据
-					if( checkInt( $_void_param ) )
+					if( AXION_UTIL_VALIDATE::checkInt( $_void_param ) )
 						$_void_result = $this->getDataByID( $_void_param );
 					else {
 						if( empty( $_void_param ) )
@@ -139,7 +140,7 @@
 				//获取符合条件的前N条数据
 				case 'top' :
 					//如果不提供获取数据的条目数默认获取1条数据
-					if( !$_void_param || !checkInt( $_void_param ) )
+					if( !$_void_param || !AXION_UTIL_VALIDATE::checkInt( $_void_param ) )
 						$_void_param = 1;
 					array_unshift( $arr_paras, $_void_param );
 					$_void_result = call_user_func_array( array( &$this, 'getTopList' ), $arr_paras );
@@ -148,7 +149,7 @@
 				//获取符合条件的最后N条数据
 				case 'end' :
 					//如果不提供获取数据的条目数默认获取1条数据
-					if( !$_void_param || ! checkInt( $_void_param ) )
+					if( !$_void_param || ! AXION_UTIL_VALIDATE::checkInt( $_void_param ) )
 						$_void_param = 1;
 					array_unshift( $arr_paras, $_void_param * - 1 );
 					$_void_result = call_user_func_array( array( &$this, 'getTopList' ), $arr_paras );

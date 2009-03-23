@@ -16,6 +16,13 @@
 		protected $arr_bill = array();
 		
 		/**
+		 * 生成FORM表单元素信息后的结果集
+		 *
+		 * @var array
+		 */
+		protected $arr_result = array();
+		
+		/**
 		 * 单件模式实例对象
 		 * @var Axion_orm_HTMLDoc
 		 */
