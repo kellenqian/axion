@@ -63,6 +63,7 @@ abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER, AXION_INT
 			}
 		}
 		$_SESSION ['_flash'] [$key] = $value;
+		return true;
 	}
 	
 	public function run() {
