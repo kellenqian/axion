@@ -154,29 +154,29 @@ class AXION_APPLICATION {
 		ob_start ();
 		
 		//实例化控制器对象
-		$instance = new $appClass ( );
+		$action = new $appClass ( );
 		
-		if (! $instance->responseTo ()) {
-			$instance->responseTo ( REQUEST_METHOD );
+		if (! $action->responseTo ()) {
+			$action->responseTo ( REQUEST_METHOD );
 		}
 		
-		if (! $instance instanceof AXION_CONTROLLER) {
+		if (! $action instanceof AXION_CONTROLLER) {
 			throw new AXION_EXCEPTION ( '非法的控制器对象' );
 		}
 		
 		//执行action
-		$instance->run ();
+		$action->run ();
 		
 		//实例化渲染器对象
-		$render = new AXION_RENDER ( $instance );
+		$render = new AXION_RENDER ( $action );
 		
 		$extOutput = ob_get_contents ();
 		
 		ob_end_clean ();
 		
-		$render->display ();
+		$render->output();
 		
-		echo $sdfdf;
+		p($extOutput);
 	}
 	
 	/**

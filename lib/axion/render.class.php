@@ -30,7 +30,7 @@ Class AXION_RENDER{
 		return $this->render->fetch();
 	}
 	
-	public function display(){
+	public function output(){
 		echo $this->fetch();
 	}
 }
