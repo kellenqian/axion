@@ -144,6 +144,11 @@ class Axion {
 		define ( 'IS_SHM', $isSHM );
 		
 		/**
+		 * 定义框架当前是否运行于CLI模式下
+		 */
+		define ( 'IS_CLI', PHP_SAPI == 'cli' ? true : false );
+		
+		/**
 		 * 定义框架默认使用的临时目录路径
 		 */
 		define ( 'TEMP_PATH', OS == 'windows' ? getenv ( 'TEMP' ) : $appTmpPath );
@@ -156,12 +161,18 @@ class Axion {
 		}
 		
 		/**
-		 * 检测应用程序是否定义了合法的路径
+		 * 定义当前应用程序所在目录
 		 */
 		if (! defined ( 'APPLICATION_PATH' )) {
-			exit ( 'Please DEFINE "APPLICATION_PATH"' );
-		} elseif (! (APPLICATION_PATH)) {
-			exit ( '"APPLICATION_PATH" is Illegal' );
+			if (IS_CLI) {
+				$pwd = $_ENV ['OLDPWD'];
+				if (! $pwd) {
+					exit ( 'PLEASE DEFINE "APPLICATION_PATH"' );
+				}
+			} else {
+				$pwd = getcwd ();
+			}
+			define ( 'APPLICATION_PATH', $pwd );
 		}
 		
 		/**
@@ -231,7 +242,7 @@ class Axion {
 		if (AXION_CONFIG::GET ( 'axion.debug.level' ) == 1)
 			return;
 		
-		if (REQUEST_METHOD != 'cli')
+		if (! IS_CLI)
 			$prefix = $_SERVER ['HTTP_HOST'] ? $_SERVER ['HTTP_HOST'] : '';
 		else
 			$prefix = join ( '_', $_SERVER ['argv'] );
@@ -305,6 +316,10 @@ class Axion {
 	 *
 	 */
 	public function __destruct() {
+		/** 防止程序意外退出执行析构函数 */
+		if (! defined ( 'APPLICATION_PATH' )) {
+			exit ();
+		}
 		/**
 		 * 存储本次程序新加载的文件列表
 		 */
