@@ -31,7 +31,7 @@ class AXION_CACHE_MEMCACHED implements AXION_INTERFACE_CACHE {
 	}
 	
 	public function failure($host, $port) {
-	/**@todo log错误机器以及端口 */
+		Axion_log::getinstance()->newMessage("MEMCACHED服务器$host:$port发生故障",Axion_log::WARNING);
 	}
 	
 	public function set($key, $value, $expire = '') {

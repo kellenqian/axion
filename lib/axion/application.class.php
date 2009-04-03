@@ -103,6 +103,7 @@ class AXION_APPLICATION {
 		/**
 		 * ORM数据表结构映射文件存储路径
 		 */
+		/** @todo 不够优美，是否回头考虑移除? */
 		define ( 'APP_ORM_MAP_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'orm' );
 		
 		/**
@@ -120,7 +121,7 @@ class AXION_APPLICATION {
 		/**
 		 * 开启SESSION支持
 		 */
-		//session_start();//@todo 暂时开启默认SESSION支持，回头需要变成自定义版本
+		session_start();//@todo 暂时开启默认SESSION支持，回头需要改为自定义版本
 		
 
 		/**
@@ -175,12 +176,7 @@ class AXION_APPLICATION {
 		
 		$render->display ();
 		
-		echo $extOutput;
-//		$firephp = AXION_UTIL_FIREPHP::getInstance(true);
-//		$firephp->group('g1');
-//		$firephp->log('sdfsdf');
-//		$firephp->log('sdfsdfsdfsdf');
-//		$firephp->groupEnd();
+		echo $sdfdf;
 	}
 	
 	/**
@@ -202,7 +198,9 @@ class AXION_APPLICATION {
 	 * @param array $errcontext
 	 */
 	public function errorHandler($errno, $errstr, $errfile, $errline, $errcontext) {
-		echo $errstr . "<br/>" . $errfile . "<br/>" . $errline . "<br/>";
+		$errcontext;
+		$str = '在'.$errfile.'文件中的第'.$errline.'行发生了错误:'.$errstr;
+		Axion_log::getinstance()->newMessage($str,$errno);
 	}
 }
 ?>

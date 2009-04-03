@@ -121,16 +121,8 @@ class Axion {
 		/**
 		 * 定义当前浏览器为FIREFOX时是否安装了FIREPHP扩展
 		 */
-		$isFIREPHP = (strpos ( $agent, 'firefox' ) && strpos ( $agent, 'firephp' )) ? true :false;
+		$isFIREPHP = (($browser == 'firefox') && strpos ( $agent, 'firephp' )) ? true : false;
 		define ( 'IS_FIREPHP', $isFIREPHP );
-		
-		/**
-		 * 定义框架当前请求方式
-		 */
-		$requestMethod = 'html';
-		if (PHP_SAPI == 'cli')
-			$requestMethod = 'cli';
-		define ( 'REQUEST_METHOD', $requestMethod );
 		
 		/**
 		 * 判断是否可以使用共享内存
@@ -313,13 +305,44 @@ class Axion {
 	 *
 	 */
 	public function __destruct() {
+		/**
+		 * 存储本次程序新加载的文件列表
+		 */
 		if (self::$new_class_found) {
 			file_put_contents ( self::$load_cache_file, serialize ( self::$loaded_class ) );
 		}
+		
 		self::$AXION_RUN_TIME = microtime ( true );
-		echo "<br/>";
-		echo AXION_UTIL::excuteTime ();
-		echo number_format ( memory_get_usage () / 1024 ) . 'k' . "<br/>";
+		$runtime = AXION_UTIL::excuteTime ();
+		$memUseage = number_format ( memory_get_usage () / 1024 ) . 'k';
+		
+		Axion_log::getinstance ()->newMessage ( '框架执行时间:' . $runtime );
+		Axion_log::getinstance ()->newMessage ( '本次内存使用:' . $memUseage );
+		
+		$logs = Axion_log::getinstance ()->getAllData ();
+		
+		if (IS_FIREPHP) {
+			$fb = AXION_UTIL_FIREPHP::getInstance ( true );
+			foreach ( $logs as $v ) {
+				switch ($v ['int_lv']) {
+					case E_WARNING :
+						$fb->warn ( $v ['str_msg'] );
+						break;
+					case E_NOTICE :
+						$fb->info ( $v ['str_msg'] );
+						break;
+					case E_ERROR :
+						$fb->error ( $v ['str_msg'] );
+						break;
+					case Axion_log::INFO :
+						$fb->log ( $v ['str_msg'] );
+						break;
+					case Axion_log::EXCEPTION :
+						$fb->error ( $v ['str_msg'] );
+						break;
+				}
+			}
+		}
 	}
 }
 

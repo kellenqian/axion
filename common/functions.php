@@ -12,7 +12,7 @@
  * @param bool $bool_isBreakPoint 开启则打印完成后停止程序执行
  * @return null
  */
-function P($mix_target, $bool_isBreakPoint = false , $return = false) {
+function P($mix_target, $bool_isBreakPoint = false, $return = false) {
 	static $_pcount;
 	$lable = $return ? $_pcount : ++ $_pcount;
 	
@@ -20,10 +20,10 @@ function P($mix_target, $bool_isBreakPoint = false , $return = false) {
 		foreach ( $mix_target as $k => $v ) {
 			if (is_bool ( $v ))
 				$mix_target [$k] = $v == true ? '(bool)true' : '(bool)false';
-			if($v === null)
-				$mix_target[$k] = '(null)';
-			if(is_array($v))
-				$mix_target[$k] = p($v,false,true);
+			if ($v === null)
+				$mix_target [$k] = '(null)';
+			if (is_array ( $v ))
+				$mix_target [$k] = p ( $v, false, true );
 		}
 	}
 	
@@ -31,10 +31,10 @@ function P($mix_target, $bool_isBreakPoint = false , $return = false) {
 	
 	if (is_bool ( $mix_target ))
 		$result = $mix_target == true ? '(bool)true' : '(bool)false';
-	if($mix_target === null)
+	if ($mix_target === null)
 		$result = '(null)';
 	
-	if($return){
+	if ($return) {
 		return $mix_target;
 	}
 	
@@ -47,15 +47,20 @@ function P($mix_target, $bool_isBreakPoint = false , $return = false) {
 		$str .= 'Debug Lable:<strong>' . $lable . '</strong><br/>';
 	}
 	$str .= 'In <strong>' . $debug [0] ['file'] . '</strong> @Line <strong>' . $debug [0] ['line'] . '</strong><BR/>';
-	$str .= $output.$result;
+	$str .= $output . $result;
 	$str .= '</pre>';
 	
 	if ($bool_isBreakPoint) {
 		exit ( $str );
 	}
 	
-	echo $str;
-	return ;
+	if (IS_FIREPHP) {
+		$str = strip_tags($str);
+		AXION_UTIL_FIREPHP::getInstance ( true )->info( $str ,'打印数据');
+	} else {
+		echo $str;
+	}
+	return;
 }
 
 /**
@@ -64,30 +69,24 @@ function P($mix_target, $bool_isBreakPoint = false , $return = false) {
  * @param object $object
  * @return array
  */
-function object2array($object) 
-{ 
-    $return = NULL; 
-       
-    if(is_array($object)) 
-    { 
-        foreach($object as $key => $value) 
-            $return[$key] = object2array($value); 
-    } 
-    else 
-    { 
-        $var = get_object_vars($object); 
-           
-        if($var) 
-        { 
-            foreach($var as $key => $value) 
-                $return[$key] = ($key && $value === '') ? NULL : object2array($value); 
-        } 
-        else return $object; 
-    } 
-
-    return $return; 
-} 
-
+function object2array($object) {
+	$return = NULL;
+	
+	if (is_array ( $object )) {
+		foreach ( $object as $key => $value )
+			$return [$key] = object2array ( $value );
+	} else {
+		$var = get_object_vars ( $object );
+		
+		if ($var) {
+			foreach ( $var as $key => $value )
+				$return [$key] = ($key && $value === '') ? NULL : object2array ( $value );
+		} else
+			return $object;
+	}
+	
+	return $return;
+}
 
 /**
  * 递归转换数组键大小写

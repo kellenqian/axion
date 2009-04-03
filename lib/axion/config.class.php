@@ -218,7 +218,7 @@ class AXION_CONFIG {
 	 * @return array
 	 */
 	private static function loadPHP($configFile){
-		/* @TODO 是否需要校验PHP格式为正确格式? */
+		/* @todo 是否需要校验PHP格式为正确格式? */
 		$array = require_once $configFile;
 		return $array;
 	}

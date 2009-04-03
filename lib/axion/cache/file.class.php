@@ -43,7 +43,7 @@ class AXION_CACHE_FILE implements AXION_INTERFACE_CACHE {
 		$freeSpaceMB = $freeSpace ? floor($freeSpace /1024/1024) : 0;
 		
 		if($freeSpaceMB < 10){
-			/**@todo 日志记录容量过小 */
+			Axion_log::getinstance()->newMessage('磁盘容量过小，无法存储数据缓存文件',AXION_LOG::WARNING);
 			return false;
 		}
 		
