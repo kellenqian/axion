@@ -284,14 +284,14 @@ class Axion {
 	 */
 	public static function autoloadClass($package_name) {
 		$package_array = split ( '_', $package_name );
-		$file_array [] = strtolower ( join ( DS, $package_array ) );
+		$file_array [0] = strtolower ( join ( DS, $package_array ) );
 		array_push ( $package_array, array_pop ( $package_array ) . '.class' );
-		$file_array [] = strtolower ( join ( DS, $package_array ) );
+		$file_array [1] = strtolower ( join ( DS, $package_array ) );
+		$file_array [2] = str_replace ( ' ', DS, ucwords ( strtolower ( join ( ' ', $package_array ) ) ) );
+		$file_array [3] = substr($file_array[2],0,-6);
 		
-		$file_array [] = ucwords ( strtolower(join ( ' ', $package_array ) . '.class' ));
-		$file_array [] = ucwords ( strtolower(join ( ' ', $package_array ) ));
 		$path_array = explode ( PATH_SEPARATOR, get_include_path () );
-		p ( $file_array );
+		
 		foreach ( $path_array as $path ) {
 			foreach ( $file_array as $file ) {
 				$fullPath = rtrim ( $path, DS ) . DS . $file . '.php';
@@ -299,6 +299,7 @@ class Axion {
 					require_once $fullPath;
 					self::$loaded_class [$package_name] = $fullPath;
 					self::$new_class_found = true;
+					break;
 				}
 			}
 		}
