@@ -121,7 +121,7 @@ class AXION_APPLICATION {
 		/**
 		 * 开启SESSION支持
 		 */
-		session_start();//@todo 暂时开启默认SESSION支持，回头需要改为自定义版本
+		session_start (); //@todo 暂时开启默认SESSION支持，回头需要改为自定义版本
 		
 
 		/**
@@ -145,7 +145,7 @@ class AXION_APPLICATION {
 		$params = $dispatcher->getParams ();
 		
 		$appClass = $params ['controller'] . '_' . $params ['action'];
-
+		
 		if (! class_exists ( $appClass )) {
 			throw new AXION_EXCEPTION ( '无法找到控制器' );
 		}
@@ -156,16 +156,25 @@ class AXION_APPLICATION {
 		//实例化控制器对象
 		$action = new $appClass ( );
 		
-		if (! $action->responseTo ()) {
-			$action->responseTo ( REQUEST_METHOD );
-		}
-		
-		if (! $action instanceof AXION_CONTROLLER) {
+		if (! $action instanceof AXION_INTERFACE_CONTROLLER) {
 			throw new AXION_EXCEPTION ( '非法的控制器对象' );
 		}
 		
 		//执行action
 		$action->run ();
+		
+		//获取控制器响应模式
+		$response = $this->processResponseFormat();
+		
+		//定义响应模式常量
+		define('REQUEST_METHOD',$response);
+		
+		//设置控制器响应模式
+		if (! $action->responseTo ()) {
+			$action->responseTo ( REQUEST_METHOD );
+		}
+		
+		p(Zend_Http_Client::request());exit;
 		
 		//实例化渲染器对象
 		$render = new AXION_RENDER ( $action );
@@ -174,9 +183,11 @@ class AXION_APPLICATION {
 		
 		ob_end_clean ();
 		
-		$render->output();
+		//获取渲染后的数据
+		$output = $render->fetch ();
 		
-		p($extOutput);
+		var_dump( $output );
+		//p ( $extOutput );
 	}
 	
 	/**
@@ -186,6 +197,21 @@ class AXION_APPLICATION {
 	 */
 	public static function getUniqueId() {
 		return $this->uniqueId;
+	}
+	
+	/**
+	 * 获取当前请求响应数据格式
+	 *
+	 * @return string
+	 */
+	public function processResponseFormat(){
+		$response = 'html';
+	
+		if(isset($_SERVER['X-AXION-REQUEST-FORMAT'])){
+			$response = $_SERVER['X-AXION-REQUEST-FORMAT'];
+		}
+		
+		return $response;
 	}
 	
 	/**
@@ -199,8 +225,8 @@ class AXION_APPLICATION {
 	 */
 	public function errorHandler($errno, $errstr, $errfile, $errline, $errcontext) {
 		$errcontext;
-		$str = '在'.$errfile.'文件中的第'.$errline.'行发生了错误:'.$errstr;
-		Axion_log::getinstance()->newMessage($str,$errno);
+		$str = '在' . $errfile . '文件中的第' . $errline . '行发生了错误:' . $errstr;
+		Axion_log::getinstance ()->newMessage ( $str, $errno );
 	}
 }
 ?>

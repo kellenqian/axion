@@ -154,6 +154,13 @@ class Axion_log {
 	
 
 	/**
+	 *newMessage的别名 
+	 */
+	public function log($str_result = null, $int_lv = self::INFO) {
+		$this->newMessage($str_result ,$int_lv);
+	}
+	
+	/**
 	 * 获取当前整体状态
 	 *
 	 * @return boolean

@@ -287,7 +287,11 @@ class Axion {
 		$file_array [] = strtolower ( join ( DS, $package_array ) );
 		array_push ( $package_array, array_pop ( $package_array ) . '.class' );
 		$file_array [] = strtolower ( join ( DS, $package_array ) );
+		
+		$file_array [] = ucwords ( strtolower(join ( ' ', $package_array ) . '.class' ));
+		$file_array [] = ucwords ( strtolower(join ( ' ', $package_array ) ));
 		$path_array = explode ( PATH_SEPARATOR, get_include_path () );
+		p ( $file_array );
 		foreach ( $path_array as $path ) {
 			foreach ( $file_array as $file ) {
 				$fullPath = rtrim ( $path, DS ) . DS . $file . '.php';
@@ -357,6 +361,8 @@ class Axion {
 						break;
 				}
 			}
+		} else {
+			P ( $logs );
 		}
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER, AXION_INTERFACE_RUNNABLE {
+abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER{
 	private $context = array ();
 	private $responseTo;
 	protected $str_templateFileName;
@@ -37,10 +37,6 @@ abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER, AXION_INT
 		return __CLASS__;
 	}
 	
-	public function actionNotFound() {
-		return '在' . __CLASS__ . '控制器下没有找到对应的方法';
-	}
-	
 	final public function getContext() {
 		return $this->context;
 	}
@@ -67,7 +63,7 @@ abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER, AXION_INT
 	}
 	
 	public function run() {
-	
+		return 'default run Function';
 	}
 	
 	public function setTpl( $str_templateFileName )
