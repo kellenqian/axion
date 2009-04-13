@@ -11,7 +11,7 @@ class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
 	private $templateInstance;
 	
 	public function __construct() {
-		$this->templateEngineInit ();
+		$this->_templateEngineInit ();
 	}
 	
 	public function addController($controller){
@@ -19,10 +19,10 @@ class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
 	}
 	
 	public function render() {
-		$this->getContext($this->controller);
+		$this->_getContext($this->controller);
 		
 		$path = get_class ( $this->controller );
-		$file = $this->parseTemplatePath ( $path );
+		$file = $this->_parseTemplatePath ( $path );
 		
 		if(!file_exists(APP_TEMPLATE_PATH . DS .$file)){
 			throw new AXION_EXCEPTION('没有找到模板文件');
@@ -35,11 +35,11 @@ class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
 		return $this->templateInstance->fetch ( $file );
 	}
 	
-	private function getContext($controller){
+	private function _getContext($controller){
 		$this->context = $controller->getContext();
 	}
 	
-	private function templateEngineInit() {
+	private function _templateEngineInit() {
 		require_once 'html' . DS . 'smarty.class.php';
 		$smarty = new Smarty ( );
 		
@@ -49,7 +49,7 @@ class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
 		$this->templateInstance = $smarty;
 	}
 	
-	private function parseTemplatePath($path) {
+	private function _parseTemplatePath($path) {
 		$suffix = AXION_CONFIG::GET ( 'axion.view.templatesuffix' );
 		$path = explode ( '_', $path );
 		$file = array_pop ( $path );

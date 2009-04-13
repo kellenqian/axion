@@ -166,7 +166,7 @@ class AXION_APPLICATION {
 		$action->run ();
 		
 		//获取控制器响应模式
-		$response = $this->_processResponseFormat ();
+		$response = AXION_REQUEST::getResponseFormat();
 		
 		//定义响应模式常量
 		define ( 'RESPONSE_FORMAT', $response );
@@ -182,7 +182,7 @@ class AXION_APPLICATION {
 		$extOutput = ob_get_contents ();
 		
 		ob_end_clean ();
-		
+	
 		//获取渲染后的数据
 		$output = $render->render ();
 		
@@ -197,21 +197,6 @@ class AXION_APPLICATION {
 	 */
 	public static function getUniqueId() {
 		return $this->uniqueId;
-	}
-	
-	/**
-	 * 获取当前请求响应数据格式
-	 *
-	 * @return string
-	 */
-	private function _processResponseFormat() {
-		$response = 'html';
-		
-		if (isset ( $_SERVER ['X-AXION-REQUEST-FORMAT'] )) {
-			$response = $_SERVER ['X-AXION-REQUEST-FORMAT'];
-		}
-		
-		return $response;
 	}
 	
 	/**

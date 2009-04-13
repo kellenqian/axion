@@ -19,6 +19,13 @@ class AXION_RENDER {
 	private $render;
 	
 	/**
+	 * 渲染后的数据内容
+	 *
+	 * @var string
+	 */
+	private $content;	
+	
+	/**
 	 * 构造方法
 	 *
 	 * @param object $appInstance 控制器实例
@@ -49,7 +56,8 @@ class AXION_RENDER {
 	 * @return string
 	 */
 	public function render() {
-		return $this->render->render ();
+		$this->content = $this->render->render ();
+		return $this->content;
 	}
 	
 	/**
