@@ -150,6 +150,8 @@ class AXION_APPLICATION {
 			throw new AXION_EXCEPTION ( '无法找到控制器' );
 		}
 		
+		define('ACTION',$appClass);
+		
 		//捕获控制器的所有非法输出
 		ob_start ();
 		
@@ -164,17 +166,15 @@ class AXION_APPLICATION {
 		$action->run ();
 		
 		//获取控制器响应模式
-		$response = $this->processResponseFormat();
+		$response = $this->_processResponseFormat ();
 		
 		//定义响应模式常量
-		define('REQUEST_METHOD',$response);
+		define ( 'RESPONSE_FORMAT', $response );
 		
 		//设置控制器响应模式
 		if (! $action->responseTo ()) {
-			$action->responseTo ( REQUEST_METHOD );
+			$action->responseTo ( RESPONSE_FORMAT );
 		}
-		
-		p(Zend_Http_Client::request());exit;
 		
 		//实例化渲染器对象
 		$render = new AXION_RENDER ( $action );
@@ -184,9 +184,9 @@ class AXION_APPLICATION {
 		ob_end_clean ();
 		
 		//获取渲染后的数据
-		$output = $render->fetch ();
+		$output = $render->render ();
 		
-		var_dump( $output );
+		var_dump ( $output );
 		//p ( $extOutput );
 	}
 	
@@ -204,11 +204,11 @@ class AXION_APPLICATION {
 	 *
 	 * @return string
 	 */
-	public function processResponseFormat(){
+	private function _processResponseFormat() {
 		$response = 'html';
-	
-		if(isset($_SERVER['X-AXION-REQUEST-FORMAT'])){
-			$response = $_SERVER['X-AXION-REQUEST-FORMAT'];
+		
+		if (isset ( $_SERVER ['X-AXION-REQUEST-FORMAT'] )) {
+			$response = $_SERVER ['X-AXION-REQUEST-FORMAT'];
 		}
 		
 		return $response;

@@ -1,9 +1,8 @@
 <?php
 class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
-	private $ctrlInstance;
 	private $templatePath;
 	private $context;
-	
+	private $controller;
 	/**
 	 * 模板引擎实例
 	 *
@@ -11,15 +10,18 @@ class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
 	 */
 	private $templateInstance;
 	
-	public function __construct($controllerInstance) {
-		$this->ctrlInstance = $controllerInstance;
-		$this->context = $this->ctrlInstance->getContext ();
+	public function __construct() {
 		$this->templateEngineInit ();
 	}
 	
-	public function fetch() {
-		if( !$path = $this->ctrlInstance->getTpl() )
-			$path = get_class ( $this->ctrlInstance );
+	public function addController($controller){
+		$this->controller = $controller;		
+	}
+	
+	public function render() {
+		$this->getContext($this->controller);
+		
+		$path = get_class ( $this->controller );
 		$file = $this->parseTemplatePath ( $path );
 		
 		if(!file_exists(APP_TEMPLATE_PATH . DS .$file)){
@@ -31,6 +33,10 @@ class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
 		}
 		
 		return $this->templateInstance->fetch ( $file );
+	}
+	
+	private function getContext($controller){
+		$this->context = $controller->getContext();
 	}
 	
 	private function templateEngineInit() {

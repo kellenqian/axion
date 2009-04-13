@@ -217,7 +217,7 @@ class Axion {
 		/**
 		 * 加载框架缓存文件
 		 */
-		self::loadCachedClass ();
+		self::_loadCachedClass ();
 		
 		/**
 		 * 记录框架初始化完成时间 
@@ -238,7 +238,7 @@ class Axion {
 	 * 载入可以缓存加载的文件
 	 *
 	 */
-	private static function loadCachedClass() {
+	private static function _loadCachedClass() {
 		if (AXION_CONFIG::GET ( 'axion.debug.level' ) == 1)
 			return;
 		
