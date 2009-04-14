@@ -28,7 +28,7 @@ class AXION_APPLICATION {
 	 *
 	 * @var md5 string
 	 */
-	private $uniqueId;
+	private static $uniqueId;
 	
 	/**
 	 * 构造函数
@@ -39,7 +39,7 @@ class AXION_APPLICATION {
 		/**
 		 * 计算应用程序的唯一ID
 		 */
-		$this->uniqueId = md5 ( APPLICATION_PATH );
+		self::$uniqueId = md5 ( APPLICATION_PATH );
 		
 		/**
 		 * 加载应用程序配置文件
@@ -85,12 +85,22 @@ class AXION_APPLICATION {
 		set_error_handler ( array ($this, 'errorHandler' ), $level );
 		
 		/**
+		 * 注册程序结束清理函数
+		 */
+		register_shutdown_function ( array ($this, 'shutdownHandler' ) );
+		
+		/**
+		 * 注册默认异常处理函数
+		 */
+		set_exception_handler ( array ($this, 'exceptionHandler' ) );
+		
+		/**
 		 * 定义应用程序程序所需的临时文件目录常量
 		 */
-		define ( 'DATA_CACHE_PATH', TEMP_PATH . DS . 'axion_' . $this->uniqueId . DS . 'datacache' );
-		define ( 'DB_CACHE_PATH', TEMP_PATH . DS . 'axion_' . $this->uniqueId . DS . 'dbcache' );
-		define ( 'VIEW_CACHE_PATH', TEMP_PATH . DS . 'axion_' . $this->uniqueId . DS . 'viewcache' );
-		define ( 'CODE_CACHE_PATH', TEMP_PATH . DS . 'axion_' . $this->uniqueId . DS . 'codecache' );
+		define ( 'DATA_CACHE_PATH', TEMP_PATH . DS . 'axion_' . self::$uniqueId . DS . 'datacache' );
+		define ( 'DB_CACHE_PATH', TEMP_PATH . DS . 'axion_' . self::$uniqueId . DS . 'dbcache' );
+		define ( 'VIEW_CACHE_PATH', TEMP_PATH . DS . 'axion_' . self::$uniqueId . DS . 'viewcache' );
+		define ( 'CODE_CACHE_PATH', TEMP_PATH . DS . 'axion_' . self::$uniqueId . DS . 'codecache' );
 		
 		/**
 		 * 定义应用程序各个库路径常量
@@ -150,7 +160,14 @@ class AXION_APPLICATION {
 			throw new AXION_EXCEPTION ( '无法找到控制器' );
 		}
 		
-		define('ACTION',$appClass);
+		define ( 'ACTION', $appClass );
+		
+		
+		
+		Axion_log::log('abcd');
+		Axion_log::log('abcd');
+		Axion_log::log('abcd');
+		Axion_log::log('sdf');
 		
 		//捕获控制器的所有非法输出
 		ob_start ();
@@ -166,7 +183,7 @@ class AXION_APPLICATION {
 		$action->run ();
 		
 		//获取控制器响应模式
-		$response = AXION_REQUEST::getResponseFormat();
+		$response = AXION_REQUEST::getResponseFormat ();
 		
 		//定义响应模式常量
 		define ( 'RESPONSE_FORMAT', $response );
@@ -182,12 +199,14 @@ class AXION_APPLICATION {
 		$extOutput = ob_get_contents ();
 		
 		ob_end_clean ();
-	
+		
 		//获取渲染后的数据
 		$output = $render->render ();
 		
 		var_dump ( $output );
-		//p ( $extOutput );
+		
+		var_dump ( $extOutput );
+	
 	}
 	
 	/**
@@ -196,7 +215,7 @@ class AXION_APPLICATION {
 	 * @return string
 	 */
 	public static function getUniqueId() {
-		return $this->uniqueId;
+		return self::uniqueId;
 	}
 	
 	/**
@@ -211,7 +230,76 @@ class AXION_APPLICATION {
 	public function errorHandler($errno, $errstr, $errfile, $errline, $errcontext) {
 		$errcontext;
 		$str = '在' . $errfile . '文件中的第' . $errline . '行发生了错误:' . $errstr;
-		Axion_log::getinstance ()->newMessage ( $str, $errno );
+		Axion_log::log ( $str, $errno );
+	}
+	
+	/**
+	 * 默认异常处理方法
+	 *
+	 * @param object $e
+	 */
+	public function exceptionHandler($e) {
+		if ($e instanceof AXION_EXCEPTION) {
+			p ( $e->__toString () );
+		}
+	}
+	
+	public function shutdownHandler() {
+		$error = error_get_last ();
+		if (! empty ( $error )) {
+			$errlevel = $error ['type'];
+			$errfile = $error ['file'];
+			$errline = $error ['line'];
+			$errstr = $error ['message'];
+			
+			if ($errlevel == (E_ERROR || E_PARSE)) {
+				$str = '在' . $errfile . '文件中的第' . $errline . '行发生了错误:' . $errstr;
+				Axion_log::log ( $str, $errlevel );
+			}
+		}
+		
+		$this->applicationTeminated();
+	}
+	
+	public function applicationTeminated() {
+		AXION::$AXION_RUN_TIME = microtime ( true );
+		$runtime = AXION_UTIL::excuteTime ();
+		$memUseage = number_format ( memory_get_usage () / 1024 ) . 'k';
+		
+		Axion_log::log ( '程序执行时间:' . $runtime );
+		Axion_log::log ( '本次内存使用:' . $memUseage );
+		
+		$logs = Axion_log::getLogPool ();
+		
+		if(Axion_log::isOverLimit()){
+			array_shift ( $logs );
+			$warningMessage = "超过日志容量限制(".axion_log::getPoolLimit().")，日志系统将自头删除数据保障程序工作";
+			$warning = array ('int_lv' => axion_log::WARNING, 'str_msg' => $warningMessage );
+			array_unshift($logs,$warning);
+		}
+		
+		
+		if (IS_FIREPHP) {
+			$fb = AXION_UTIL_FIREPHP::getInstance ( true );
+			foreach ( $logs as $v ) {
+				switch ($v ['int_lv']) {
+					case Axion_log::WARNING :
+						$fb->warn ( $v ['str_msg'] );
+						break;
+					case Axion_log::NOTICE :
+						$fb->info ( $v ['str_msg'] );
+						break;
+					case Axion_log::ERROR :
+						$fb->error ( $v ['str_msg'] );
+						break;
+					case Axion_log::INFO :
+						$fb->log ( $v ['str_msg'] );
+						break;
+				}
+			}
+		} else {
+			P ( $logs );
+		}
 	}
 }
 ?>

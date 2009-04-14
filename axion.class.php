@@ -62,8 +62,8 @@ class Axion {
 		/**
 		 * 检测PHP版本，必须高于5.2.0
 		 */
-		if (version_compare ( PHP_VERSION, '5.2.0', '<' ))
-			exit ( 'Axion Framework Requires PHP Version >= 5.2' );
+		if (version_compare ( PHP_VERSION, '5.2.2', '<' ))
+			exit ( 'Axion Framework Requires PHP Version >= 5.2.2' );
 		
 		/**
 		 * 记录程序开始执行的时间点
@@ -205,11 +205,6 @@ class Axion {
 		require AXION_PATH . DS . 'lib' . DS . 'axion' . DS . 'application.class.php';
 		
 		/**
-		 * 注册默认异常处理函数
-		 */
-		set_exception_handler ( array ($this, 'exceptionHandler' ) );
-		
-		/**
 		 * 加载AXION框架默认配置文件
 		 */
 		AXION_CONFIG::loadConfigFile ( AXION_PATH . DS . 'common' . DS . 'config.xml' );
@@ -305,18 +300,7 @@ class Axion {
 			}
 		}
 	}
-	
-	/**
-	 * 默认异常处理方法
-	 *
-	 * @param object $e
-	 */
-	public function exceptionHandler($e) {
-		if ($e instanceof AXION_EXCEPTION) {
-			p ( $e->__toString () );
-		}
-	}
-	
+		
 	/**
 	 * 框架析构函数
 	 *
@@ -331,40 +315,6 @@ class Axion {
 		 */
 		if (self::$new_class_found) {
 			file_put_contents ( self::$load_cache_file, serialize ( self::$loaded_class ) );
-		}
-		
-		self::$AXION_RUN_TIME = microtime ( true );
-		$runtime = AXION_UTIL::excuteTime ();
-		$memUseage = number_format ( memory_get_usage () / 1024 ) . 'k';
-		
-		Axion_log::getinstance ()->newMessage ( '框架执行时间:' . $runtime );
-		Axion_log::getinstance ()->newMessage ( '本次内存使用:' . $memUseage );
-		
-		$logs = Axion_log::getinstance ()->getAllData ();
-		
-		if (IS_FIREPHP) {
-			$fb = AXION_UTIL_FIREPHP::getInstance ( true );
-			foreach ( $logs as $v ) {
-				switch ($v ['int_lv']) {
-					case E_WARNING :
-						$fb->warn ( $v ['str_msg'] );
-						break;
-					case E_NOTICE :
-						$fb->info ( $v ['str_msg'] );
-						break;
-					case E_ERROR :
-						$fb->error ( $v ['str_msg'] );
-						break;
-					case Axion_log::INFO :
-						$fb->log ( $v ['str_msg'] );
-						break;
-					case Axion_log::EXCEPTION :
-						$fb->error ( $v ['str_msg'] );
-						break;
-				}
-			}
-		} else {
-			P ( $logs );
 		}
 	}
 }

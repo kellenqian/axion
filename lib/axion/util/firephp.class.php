@@ -497,7 +497,7 @@ class AXION_UTIL_FIREPHP {
     }
   
     if (headers_sent($filename, $linenum)) {
-        Axion_log::getinstance()->log("HEADER已经在$filename的第$linenum行输出，无法再次输出HEADER",Axion_log::ERROR);
+        Axion_log::log("HEADER已经在$filename的第$linenum行输出，无法再次输出HEADER",Axion_log::ERROR);
     }
   
     $Type = null;
@@ -528,7 +528,7 @@ class AXION_UTIL_FIREPHP {
       $Type = func_get_arg(2);
       $Label = func_get_arg(1);
     } else {
-         Axion_log::getinstance()->log("FB函数的参数数量错误！",Axion_log::ERROR);
+         Axion_log::log("FB函数的参数数量错误！",Axion_log::ERROR);
     }
   
   
@@ -723,7 +723,7 @@ class AXION_UTIL_FIREPHP {
             $this->messageIndex++;
             
             if ($this->messageIndex > 99999) {
-                Axion_log::getinstance()->log('Maximum number (99,999) of messages reached!',Axion_log::ERROR);             
+                Axion_log::log('Maximum number (99,999) of messages reached!',Axion_log::ERROR);             
             }
         }
     }
