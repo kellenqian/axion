@@ -28,13 +28,19 @@ class Axion_log {
 	 * 整体状态$arr_dataPool中最高的异常等级
 	 * @var int
 	 */
-	private static $int_maxErrLv = 0;
+	private static $int_maxErrLv = self::INFO;
+	
+	/**
+	 * 整体状态$arr_dataPool中最高的异常等级的日志
+	 * @var int
+	 */
+	private static $arr_maxErrLog = array ();
 	
 	/**
 	 * 异常信息队列
 	 * @var array
 	 */
-	private static $arr_errLevelMap = array (self::INFO => '消息', self::NOTICE => '注意', self::WARNING => '警告', self::ERROR => '错误' , self::PARSE => '编译' , self::STRICT => '建议' , self::UNDEFINED => '未定义');
+	private static $arr_errLevelMap = array (self::INFO => '消息', self::NOTICE => '注意', self::WARNING => '警告', self::ERROR => '错误', self::PARSE => '编译', self::STRICT => '建议', self::UNDEFINED => '未定义' );
 	
 	/**
 	 * 消息池最大条目数
@@ -145,12 +151,22 @@ class Axion_log {
 		
 		if (self::$_poolSize < self::$poolLimit) {
 			self::$arr_dataPool [] = $dataMap;
-			self::$_poolSize++;
+			self::$_poolSize ++;
 		} else {
 			array_shift ( self::$arr_dataPool );
-			array_push (self::$arr_dataPool , $dataMap );
+			array_push ( self::$arr_dataPool, $dataMap );
 			self::$overLimit = true;
 		}
+		
+		if ($int_lv < self::NOTICE) {
+			self::$bool_isNice = false;
+		}
+		
+		if ($int_lv < self::$int_maxErrLv) {
+			self::$int_maxErrLv = $int_lv;
+			self::$arr_maxErrLog = $dataMap;
+		}
+		
 		return true;
 	} //function log
 	
@@ -158,6 +174,8 @@ class Axion_log {
 	/**
 	 * 存储日志记录方法的别名
 	 *
+	 * 向下兼容过去代码
+	 * 
 	 * @param int $int_lv				错误等级
 	 * @param string $str_result		错误提示信息
 	 * @return boolean
@@ -172,7 +190,7 @@ class Axion_log {
 	 *
 	 * @return boolean
 	 */
-	public static function getState() {
+	public static function isNice() {
 		return self::$bool_isNice;
 	} //function getState
 	
@@ -193,7 +211,7 @@ class Axion_log {
 	 * @return string
 	 */
 	public static function getMaxErrLog() {
-		return false;
+		return self::$arr_maxErrLog;
 	} //function getMaxErrString
 	
 
@@ -214,10 +232,9 @@ class Axion_log {
 	 */
 	public static function dump() {
 		$arr_result = array ();
-		$arr_result ['sysOperateState'] = ($this->getState () ? 'True' : 'False'); //处理状态
-		$arr_result ['sysAlertLv'] = $this->getMaxErrLv (); //最高错误等级
-		$arr_result ['sysMsgString'] = $this->getAllMessage (); //完整信息提示
-		$arr_result ['sysMsgArray'] = $this->arr_dataPool; //错误消息完整内容
+		$arr_result ['sysOperateState'] = (self::isNice () ? 'True' : 'False'); //处理状态
+		$arr_result ['sysAlertLv'] = self::getMaxErrLv (); //最高错误等级
+		$arr_result ['sysMsgArray'] = self::getLogPool (); //错误消息完整内容
 		return $arr_result;
 	} //function getFullData
 	
@@ -243,16 +260,16 @@ class Axion_log {
 		return true;
 	} //function 
 	
-	
-	public static function changeMessagePollSize($num){
+
+	public static function changeMessagePollSize($num) {
 		self::$poolLimit = $num;
 	}
 	
-	public static function isOverLimit(){
+	public static function isOverLimit() {
 		return self::$overLimit;
 	}
 	
-	public static function getPoolLimit(){
+	public static function getPoolLimit() {
 		return self::$poolLimit;
 	}
 	

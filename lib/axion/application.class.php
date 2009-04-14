@@ -162,13 +162,6 @@ class AXION_APPLICATION {
 		
 		define ( 'ACTION', $appClass );
 		
-		
-		
-		Axion_log::log('abcd');
-		Axion_log::log('abcd');
-		Axion_log::log('abcd');
-		Axion_log::log('sdf');
-		
 		//捕获控制器的所有非法输出
 		ob_start ();
 		
@@ -258,7 +251,7 @@ class AXION_APPLICATION {
 			}
 		}
 		
-		$this->applicationTeminated();
+		$this->applicationTeminated ();
 	}
 	
 	public function applicationTeminated() {
@@ -271,13 +264,12 @@ class AXION_APPLICATION {
 		
 		$logs = Axion_log::getLogPool ();
 		
-		if(Axion_log::isOverLimit()){
+		if (Axion_log::isOverLimit ()) {
 			array_shift ( $logs );
-			$warningMessage = "超过日志容量限制(".axion_log::getPoolLimit().")，日志系统将自头删除数据保障程序工作";
+			$warningMessage = "超过日志容量限制(" . axion_log::getPoolLimit () . ")，日志系统将自头删除数据保障程序工作";
 			$warning = array ('int_lv' => axion_log::WARNING, 'str_msg' => $warningMessage );
-			array_unshift($logs,$warning);
+			array_unshift ( $logs, $warning );
 		}
-		
 		
 		if (IS_FIREPHP) {
 			$fb = AXION_UTIL_FIREPHP::getInstance ( true );
