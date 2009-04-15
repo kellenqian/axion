@@ -21,19 +21,7 @@ class Axion {
 	 *
 	 * @var float
 	 */
-	public static $AXION_START_TIME;
-	/**
-	 * 框架初始化完成时间
-	 *
-	 * @var float
-	 */
-	public static $AXION_INIT_TIME;
-	/**
-	 * 框架执行程序完成时间
-	 *
-	 * @var float
-	 */
-	public static $AXION_RUN_TIME;
+	public static $startTime;
 	
 	/**
 	 * 是否发现新的加载文件
@@ -60,15 +48,15 @@ class Axion {
 	 */
 	public function __construct() {
 		/**
+		 * 记录程序开始执行的时间点
+		 */
+		self::$startTime = microtime ( true );
+		
+		/**
 		 * 检测PHP版本，必须高于5.2.0
 		 */
 		if (version_compare ( PHP_VERSION, '5.2.2', '<' ))
 			exit ( 'Axion Framework Requires PHP Version >= 5.2.2' );
-		
-		/**
-		 * 记录程序开始执行的时间点
-		 */
-		self::$AXION_START_TIME = microtime ( true );
 		
 		/**
 		 * 定义自适应系统的目录分隔符
@@ -117,6 +105,13 @@ class Axion {
 				$browser = 'unknow';
 		}
 		define ( 'BROWSER', $browser );
+		
+		/**
+		 * 获取客户端IP地址
+		 */
+		/* @todo 需要修改完成细致的IP获取工作 */
+		$remoteIp = $_SERVER['REMOTE_ADDR'];
+		define('IP',$remoteIp);
 		
 		/**
 		 * 定义当前浏览器为FIREFOX时是否安装了FIREPHP扩展
@@ -213,11 +208,6 @@ class Axion {
 		 * 加载框架缓存文件
 		 */
 		self::_loadCachedClass ();
-		
-		/**
-		 * 记录框架初始化完成时间 
-		 */
-		self::$AXION_INIT_TIME = microtime ( true );
 	}
 	
 	/**
@@ -249,14 +239,12 @@ class Axion {
 		self::$load_cache_file = $cacheFile;
 		if (file_exists ( $cacheFile )) {
 			$codeFile = unserialize ( file_get_contents ( $cacheFile ) );
-			
 			self::$loaded_class = $codeFile;
 			foreach ( $codeFile as $v ) {
 				require_once $v;
 			}
 		}
 	}
-	
 	
 	/**
 	 * 设置自动加载目录
@@ -284,7 +272,7 @@ class Axion {
 		array_push ( $package_array, array_pop ( $package_array ) . '.class' );
 		$file_array [1] = strtolower ( join ( DS, $package_array ) );
 		$file_array [2] = str_replace ( ' ', DS, ucwords ( strtolower ( join ( ' ', $package_array ) ) ) );
-		$file_array [3] = substr($file_array[2],0,-6);
+		$file_array [3] = substr ( $file_array [2], 0, - 6 );
 		
 		$path_array = explode ( PATH_SEPARATOR, get_include_path () );
 		
@@ -300,7 +288,7 @@ class Axion {
 			}
 		}
 	}
-		
+	
 	/**
 	 * 框架析构函数
 	 *

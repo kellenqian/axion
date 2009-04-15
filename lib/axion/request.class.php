@@ -25,12 +25,18 @@ class AXION_REQUEST {
 		
 		if (isset ( $_POST ['_method'] )) {
 			$postMethod = strtoupper ( $_POST ['_method'] );
+		}else{
+			$postMethod = '';
 		}
 		
 		$headMethod = strtoupper ( $_SERVER ['REQUEST_METHOD'] );
 		
 		if (! in_array ( $headMethod, $_method )) {
 			return 'GET';
+		}
+		
+		if($postMethod == ''){
+			return $headMethod;
 		}
 		
 		if ($postMethod != 'GET' && $headMethod == 'GET') {

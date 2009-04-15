@@ -31,6 +31,33 @@ class AXION_APPLICATION {
 	private static $uniqueId;
 	
 	/**
+	 * 当前请求控制器名
+	 *
+	 * @var string
+	 */
+	private static $controller;
+	
+	/**
+	 * 当前请求动作名
+	 *
+	 * @var string
+	 */
+	private static $action;
+	
+	/**
+	 * 当前请求方法类型
+	 *
+	 * @var string
+	 */
+	private static $method;
+	
+	/**
+	 * 当前请求渲染器名
+	 *
+	 * @var string
+	 */
+	private static $responseFormat;
+	/**
 	 * 构造函数
 	 *
 	 * 初始化应用程序
@@ -154,16 +181,24 @@ class AXION_APPLICATION {
 		
 		$params = $dispatcher->getParams ();
 		
-		$appClass = $params ['controller'] . '_' . $params ['action'];
+		$controller = $params ['controller'];
+		
+		$action = $params ['action'];
+		
+		$appClass = $controller . '_' . $action;
 		
 		if (! class_exists ( $appClass )) {
 			throw new AXION_EXCEPTION ( '无法找到控制器' );
 		}
 		
-		define ( 'ACTION', $appClass );
+		define ( 'ACTION_ClASS', $appClass );
+		
+		self::$controller = $controller;
+		
+		self::$action = $action;
 		
 		//捕获控制器的所有非法输出
-		ob_start ();
+		//ob_start ();
 		
 		//实例化控制器对象
 		$action = new $appClass ( );
@@ -179,19 +214,28 @@ class AXION_APPLICATION {
 		$response = AXION_REQUEST::getResponseFormat ();
 		
 		//定义响应模式常量
-		define ( 'RESPONSE_FORMAT', $response );
+		self::$responseFormat = $response;
+		
+		//获取控制器请求方法
+		$method = AXION_REQUEST::getRequestMethod();
+		self::$method = $method;
 		
 		//设置控制器响应模式
 		if (! $action->responseTo ()) {
-			$action->responseTo ( RESPONSE_FORMAT );
+			$action->responseTo ( $response );
 		}
+		
+		//记录程序执行数据
+		$initMessage = "Processing $controller"."Controller#".self::$action.
+					   " (for ".IP." at ".date('Y-m-d H:i:s').") [".self::$method."]"; 
+		Axion_log::log($initMessage,Axion_log::INFO,'run');
 		
 		//实例化渲染器对象
 		$render = new AXION_RENDER ( $action );
 		
 		$extOutput = ob_get_contents ();
 		
-		ob_end_clean ();
+		//ob_end_clean ();
 		
 		//获取渲染后的数据
 		$output = $render->render ();
@@ -208,7 +252,23 @@ class AXION_APPLICATION {
 	 * @return string
 	 */
 	public static function getUniqueId() {
-		return self::uniqueId;
+		return self::$uniqueId;
+	}
+	
+	public static function getController() {
+		return self::$controller;
+	}
+	
+	public static function getAction() {
+		return self::$action;
+	}
+	
+	public static function getMethod() {
+		return self::$method;
+	}
+	
+	public static function getResponseFormat() {
+		return self::$responseFormat;
 	}
 	
 	/**
@@ -255,7 +315,6 @@ class AXION_APPLICATION {
 	}
 	
 	public function applicationTeminated() {
-		AXION::$AXION_RUN_TIME = microtime ( true );
 		$runtime = AXION_UTIL::excuteTime ();
 		$memUseage = number_format ( memory_get_usage () / 1024 ) . 'k';
 		

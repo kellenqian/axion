@@ -138,7 +138,7 @@ class Axion_log {
 	 * @param string $str_result		错误提示信息
 	 * @return boolean
 	 */
-	public static function log($str_result, $int_lv = self::INFO) {
+	public static function log($str_result, $int_lv = self::INFO, $section = 'system') {
 		if (empty ( $str_result )) {
 			return false;
 		}
@@ -150,11 +150,11 @@ class Axion_log {
 		$dataMap = array ('int_lv' => $int_lv, 'str_msg' => $str_result );
 		
 		if (self::$_poolSize < self::$poolLimit) {
-			self::$arr_dataPool [] = $dataMap;
+			self::$arr_dataPool [$section] [] = $dataMap;
 			self::$_poolSize ++;
 		} else {
-			array_shift ( self::$arr_dataPool );
-			array_push ( self::$arr_dataPool, $dataMap );
+			array_shift ( self::$arr_dataPool [$section] );
+			array_push ( self::$arr_dataPool [$section], $dataMap );
 			self::$overLimit = true;
 		}
 		
