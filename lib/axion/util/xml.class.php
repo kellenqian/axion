@@ -33,7 +33,7 @@
 	☆		直接返回XML结构字符串且不输出到浏览器	☆
 	***********************************************/ 	
 	
-	class Axion_util_xml
+	class AXION_UTIL_XML
 	{
 		/**
 		 * 输出模式定义：该模式输出带有XSLT解析标志的XML文档到浏览器
@@ -57,37 +57,37 @@
 		 * 数据结构数组 能够与“XML数据结构”进行相互转换
 		 * @var array
 		 */
-		private $arr_docs;
+		protected $arr_docs;
 		
 		/**
 		 * 类输出模式
 		 * @var integer
 		 */
-		private $int_outModule;
+		protected $int_outModule;
 		
 		/**
 		 * 定义输出的XML结构文档根标签名称
 		 * @var string
 		 */
-		private $str_rootTag;
+		protected $str_rootTag;
 		
 		/**
 		 * 如果“数据结构数组”中未指明下标值，则使用该值进行XML解析
 		 * @var string
 		 */
-		private $str_childTag;
+		protected $str_childTag;
 		
 		/**
 		 * XML数据结构 能够与“数据结构数组”进行相互转换
 		 * @var string
 		 */
-		private $str_xmlDoc;
+		protected $str_xmlDoc;
 		
 		/**
 		 * XML数据字符集
 		 * @var string
 		 */
-		private $str_charset;
+		protected $str_charset;
 		
 		/**
 		 * 构造函数
@@ -173,7 +173,7 @@
 		 * @param string $str_tagName 要验证的标签名称
 		 * @return boolean
 		 */
-		private function checkTagName( $str_tagName )
+		protected function checkTagName( $str_tagName )
 		{
 			if( !checkString( $str_tagName, null, null, '/^[a-z0-9_\-\.]*$/i' ) )
 				return false;
@@ -187,7 +187,7 @@
 		 * @param array $arr_element 要解析的“数据结构数组”
 		 * @return string
 		 */
-		private function parseElement( $arr_element )
+		protected function parseElement( $arr_element )
 		{
 			//XML文档内容
 			$_str_xmlDoc = '';
@@ -392,5 +392,5 @@
 			
 			return true;
 		}//end function paresXML
-	}//class Axion_util_xml
+	}//class AXION_UTIL_XML
 ?>
