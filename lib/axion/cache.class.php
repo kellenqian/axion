@@ -6,13 +6,13 @@ class AXION_CACHE {
 	 * @param string $cacheHandlerName
 	 * @return AXION_INTERFACE_CACHE
 	 */
-	public static function getInstance($cacheHandlerName) {
+	public static function getInstance($cacheHandlerName = '') {
 		static $_handler = array();
 		$cacheHandlerName = $cacheHandlerName ? 
 							$cacheHandlerName :
 							AXION_CONFIG::get('axion.cache.handler');
-		
-		if($_handler[$cacheHandlerName]){
+				
+		if( !empty( $_handler[$cacheHandlerName] ) ){
 			return $_handler[$cacheHandlerName];
 		}else{
 			$cacheInstance = self::factory($cacheHandlerName);

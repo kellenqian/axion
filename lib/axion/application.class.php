@@ -180,7 +180,7 @@ class AXION_APPLICATION {
 		}
 		
 		$params = $dispatcher->getParams ();
-		
+		AXION_CONFIG::set( 'axion.application', $params );
 		$controller = $params ['controller'];
 		
 		$action = $params ['action'];

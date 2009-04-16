@@ -100,9 +100,7 @@
 		 */
 		static function _init()
 		{
-			if( Axion_db_MySQL::$obj_this )
-				return Axion_db_MySQL::$obj_this;
-			else
+			if( !Axion_db_MySQL::$obj_this )
 				Axion_db_MySQL::$obj_this = new Axion_db_MySQL( );
 			
 			return Axion_db_MySQL::$obj_this;

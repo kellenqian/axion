@@ -1,8 +1,8 @@
 <?php
 class AXION_CACHE_FILE implements AXION_INTERFACE_CACHE {
-	private $config = array ();
+	protected $config = array ();
 	
-	private static $_data;
+	protected static $_data;
 	
 	public function get($key) {
 		$hash = md5 ( $key );
@@ -95,7 +95,7 @@ class AXION_CACHE_FILE implements AXION_INTERFACE_CACHE {
 	
 	}
 	
-	private function genFileName($key) {
+	protected function genFileName($key) {
 		$hash = md5 ( $key );
 		$fileName = $this->config ['path'] . DS . $this->config ['prefix'] . '_' . $hash . '.cache';
 		
