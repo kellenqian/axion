@@ -11,7 +11,7 @@ Class AXION_DISPATCHER implements AXION_INTERFACE_DISPATCHER{
 		if(empty($_SERVER['PATH_INFO'])){
 			$this->controller = AXION_CONFIG::get('axion.controller.default');
 			$this->action     = AXION_CONFIG::get('axion.action.default');
-			AXION_CONFIG::set( 'axion.controller.outModel', 'html' );
+			AXION_CONFIG::set( 'axion.controller.outModel', 'html' );/* @todo 这是个什么东西 ？ */
 		}else {
 			$pathinfo = trim($_SERVER['PATH_INFO'],'/');
 			$pathinfoArray = $this->parsePathinfo($pathinfo);
@@ -70,7 +70,9 @@ Class AXION_DISPATCHER implements AXION_INTERFACE_DISPATCHER{
 		$params = array();
 		for ($i=0 ; $i < sizeof($pathinfoArray) ; $i++){
 			if($pathinfoArray[$i]){
-				$params[$pathinfoArray[$i]] = $pathinfoArray[++$i];
+				if(isset($pathinfoArray[$i+1])){
+					$params[$pathinfoArray[$i]] = $pathinfoArray[++$i];
+				}
 			}
 		}
 		
