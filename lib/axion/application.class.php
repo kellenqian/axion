@@ -234,15 +234,15 @@ class AXION_APPLICATION {
 		$render = new AXION_RENDER ( $action );
 		
 		$extOutput = ob_get_contents ();
-		
+
 		//ob_end_clean ();
 		
 		//获取渲染后的数据
 		$output = $render->render ();
 		
-		var_dump ( $output );
-		
-		var_dump ( $extOutput );
+//		var_dump ( $output );
+//		
+//		var_dump ( $extOutput );
 	
 	}
 	
@@ -349,7 +349,7 @@ class AXION_APPLICATION {
 				}
 			}
 		} else {
-			P ( $logs );
+//			P ( $logs );
 		}
 	}
 }

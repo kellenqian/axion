@@ -166,7 +166,7 @@ abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER{
 	
 	final public function getCache( $int_key = '' )
 	{
-		$_arr_params = AXION_CONFIG::get( 'axion.application' );
+		$_arr_params = $_SERVER['PHP_SELF'];
 		return AXION_CACHE_APP::load( serialize( $_arr_params ) . $int_key );
 	}//end function getCache
 	
@@ -178,7 +178,7 @@ abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER{
 		//缓存结果集
 		if( REQUEST_METHOD == 'GET' && !is_null( $this->int_cacheKey ) )
 		{
-			$_arr_params = AXION_CONFIG::get( 'axion.application' );
+			$_arr_params = $_SERVER['PHP_SELF'];
 			$_arr_result = $this->context;
 			AXION_CACHE_APP::save( serialize( $_arr_params ) . $this->int_cacheKey, $_arr_result );
 		}//if

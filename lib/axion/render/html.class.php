@@ -32,7 +32,10 @@ class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
 			$this->templateInstance->assign ( $k, $v );
 		}
 		
-		return $this->templateInstance->fetch ( $file );
+		$_str_resultHTML = $this->templateInstance->fetch ( $file );
+		header( "Content-Type:text/html; Charset='UTF-8'" );
+		echo $_str_resultHTML;
+		exit;
 	}
 	
 	private function _getContext($controller){

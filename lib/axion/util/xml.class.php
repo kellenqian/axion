@@ -98,7 +98,7 @@
 		function __construct( )
 		{
 			$this->arr_docs = array();
-			$this->int_outModule = XMLDocument::$INT_OUTMODULE_HTML;
+			$this->int_outModule = AXION_UTIL_XML::$INT_OUTMODULE_HTML;
 			$this->str_childTag = 'childs';
 			$this->str_rootTag = 'XMLDocument';
 			$this->str_xmlDoc = '';
@@ -175,7 +175,7 @@
 		 */
 		protected function checkTagName( $str_tagName )
 		{
-			if( !checkString( $str_tagName, null, null, '/^[a-z0-9_\-\.]*$/i' ) )
+			if( !AXION_UTIL_VALIDATE::checkString( $str_tagName, null, null, '/^[a-z0-9_\-\.]*$/i' ) )
 				return false;
 				
 			return true;
@@ -234,7 +234,7 @@
 			//设置XML文档字符集
 			$_str_xml = "<?xml version='1.0' encoding='".$this->str_charset."' ?>";
 			//设置要应用XSLT文件地址
-			if( $this->int_outModule != XMLDocument::$INT_OUTMODULE_XML )
+			if( $this->int_outModule != AXION_UTIL_XML::$INT_OUTMODULE_XML )
 				$_str_xml .= ( is_null( $str_xsltPath ) ? '' : "\n<?xml-stylesheet type='text/xsl' href='{$str_xsltPath}' ?>" );
 			//获取XML内容
 			$_str_xml .= "\n<{$this->str_rootTag}>";
@@ -244,7 +244,7 @@
 			/**
 			 * 以文件方式存储XML信息
 			 */
-			if( $this->int_outModule == XMLDocument::$INT_OUTMODULE_FILE )
+			if( $this->int_outModule == AXION_UTIL_XML::$INT_OUTMODULE_FILE )
 			{
 				$_hl_aimFile = fopen( $str_aimFileName, 'w' );
 				if( !$_hl_aimFile )
@@ -255,11 +255,11 @@
 					
 				return true;
 			}//if
-			else if( $this->int_outModule == XMLDocument::$INT_OUTMODULE_XML )
+			else if( $this->int_outModule == AXION_UTIL_XML::$INT_OUTMODULE_XML )
 				return $_str_xml;
 				
 			//输出XML信息
-			header( "Content-Type:text/xml; Charset='".$this->str_charset."'" );
+			header( "Content-Type:text/xml; Charset='UTF-8'" );
 			echo $_str_xml;
 			return true;
 		}//end function getXMLDocument
