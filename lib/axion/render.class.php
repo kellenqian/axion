@@ -23,7 +23,7 @@ class AXION_RENDER {
 	 *
 	 * @var string
 	 */
-	private $content;	
+	private $content;
 	
 	/**
 	 * 构造方法

@@ -54,7 +54,7 @@ function P($mix_target, $bool_isBreakPoint = false, $return = false) {
 		exit ( $str );
 	}
 	
-	if (IS_FIREPHP) {
+	if (IS_FIREPHP && AXION_CONFIG::get('axion.debug.usefirephp')) {
 		$str = strip_tags($str);
 		AXION_UTIL_FIREPHP::getInstance ( true )->info( $str ,'打印数据');
 	} else {

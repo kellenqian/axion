@@ -1,5 +1,5 @@
 <?php
-
+phpinfo();
 /**
  * 注册框架自动加载函数
  */
@@ -110,8 +110,8 @@ class Axion {
 		 * 获取客户端IP地址
 		 */
 		/* @todo 需要修改完成细致的IP获取工作 */
-		$remoteIp = $_SERVER['REMOTE_ADDR'];
-		define('IP',$remoteIp);
+		$remoteIp = $_SERVER ['REMOTE_ADDR'];
+		define ( 'IP', $remoteIp );
 		
 		/**
 		 * 定义当前浏览器为FIREFOX时是否安装了FIREPHP扩展
@@ -215,8 +215,13 @@ class Axion {
 	 *
 	 */
 	public function Run() {
-		$app = new AXION_APPLICATION ( );
+		$app = AXION_APPLICATION::getInstance ();
 		$app->run ();
+	}
+	
+	private static function _load($fileName) {
+		echo $fileName."<br/>";
+		require_once $fileName;
 	}
 	
 	/**
@@ -241,7 +246,7 @@ class Axion {
 			$codeFile = unserialize ( file_get_contents ( $cacheFile ) );
 			self::$loaded_class = $codeFile;
 			foreach ( $codeFile as $v ) {
-				require_once $v;
+				self::_load ( $v );
 			}
 		}
 	}
@@ -280,7 +285,7 @@ class Axion {
 			foreach ( $file_array as $file ) {
 				$fullPath = rtrim ( $path, DS ) . DS . $file . '.php';
 				if (file_exists ( $fullPath )) {
-					require_once $fullPath;
+					self::_load ( $fullPath );
 					self::$loaded_class [$package_name] = $fullPath;
 					self::$new_class_found = true;
 					break;

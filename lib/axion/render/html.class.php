@@ -14,18 +14,18 @@ class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
 		$this->_templateEngineInit ();
 	}
 	
-	public function addController($controller){
-		$this->controller = $controller;		
+	public function addController($controller) {
+		$this->controller = $controller;
 	}
 	
 	public function render() {
-		$this->_getContext($this->controller);
+		$this->_getContext ( $this->controller );
 		
 		$path = get_class ( $this->controller );
 		$file = $this->_parseTemplatePath ( $path );
 		
-		if(!file_exists(APP_TEMPLATE_PATH . DS .$file)){
-			throw new AXION_EXCEPTION('没有找到模板文件');
+		if (! file_exists ( APP_TEMPLATE_PATH . DS . $file )) {
+			throw new AXION_EXCEPTION ( '没有找到模板文件' );
 		}
 		
 		foreach ( $this->context as $k => $v ) {
@@ -33,13 +33,12 @@ class AXION_RENDER_HTML implements AXION_INTERFACE_RENDER {
 		}
 		
 		$_str_resultHTML = $this->templateInstance->fetch ( $file );
-		header( "Content-Type:text/html; Charset='UTF-8'" );
-		echo $_str_resultHTML;
-		exit;
+		
+		return $_str_resultHTML;
 	}
 	
-	private function _getContext($controller){
-		$this->context = $controller->getContext();
+	private function _getContext($controller) {
+		$this->context = $controller->getContext ();
 	}
 	
 	private function _templateEngineInit() {

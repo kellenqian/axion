@@ -31,6 +31,13 @@ class AXION_APPLICATION {
 	private static $uniqueId;
 	
 	/**
+	 * ACTION对象实例
+	 *
+	 * @var AXION_CONTROLLER_INTERFACE
+	 */
+	private static $actionInstance;
+	
+	/**
 	 * 当前请求控制器名
 	 *
 	 * @var string
@@ -57,6 +64,17 @@ class AXION_APPLICATION {
 	 * @var string
 	 */
 	private static $responseFormat;
+	
+	public static function getInstance() {
+		static $_applicationInstance;
+		if ($_applicationInstance) {
+			return $_applicationInstance;
+		}
+		
+		$_applicationInstance = new self ( );
+		return $_applicationInstance;
+	}
+	
 	/**
 	 * 构造函数
 	 *
@@ -146,12 +164,12 @@ class AXION_APPLICATION {
 		/**
 		 * 创建应用程序所需的临时文件目录
 		 */
-		/**@todo 是否移除这部分的判断一次性完成？ **/
-		$tmpDirs = array ('data_cache' => DATA_CACHE_PATH, 'db_cache' => DB_CACHE_PATH, 'view_cache' => VIEW_CACHE_PATH, 'code_cache' => CODE_CACHE_PATH );
-		
-		foreach ( $tmpDirs as $v ) {
-			if (! is_dir ( $v )) {
-				AXION_UTIL_FILE::mkdir ( $v, 0755 );
+		if (! file_exists ( APPLICATION_PATH . DS . 'serverInit.done' )) {
+			$tmpDirs = array ('data_cache' => DATA_CACHE_PATH, 'db_cache' => DB_CACHE_PATH, 'view_cache' => VIEW_CACHE_PATH, 'code_cache' => CODE_CACHE_PATH );
+			foreach ( $tmpDirs as $v ) {
+				if (! is_dir ( $v )) {
+					AXION_UTIL_FILE::mkdir ( $v, 0755 );
+				}
 			}
 		}
 		
@@ -180,7 +198,7 @@ class AXION_APPLICATION {
 		}
 		
 		$params = $dispatcher->getParams ();
-		AXION_CONFIG::set( 'axion.application', $params );
+		
 		$controller = $params ['controller'];
 		
 		$action = $params ['action'];
@@ -197,15 +215,26 @@ class AXION_APPLICATION {
 		
 		self::$action = $action;
 		
+		/**
+		 * 合并调度后的URL参数到$_GET 与 $_REQUEST
+		 */
+		if (isset ( $params ['params'] )) {
+			$_GET = array_merge ( $_GET, $params ['params'] );
+			$_REQUEST = array_merge ( $_REQUEST, $_GET );
+		}
+		
 		//捕获控制器的所有非法输出
 		//ob_start ();
 		
+
 		//实例化控制器对象
 		$action = new $appClass ( );
 		
 		if (! $action instanceof AXION_INTERFACE_CONTROLLER) {
 			throw new AXION_EXCEPTION ( '非法的控制器对象' );
 		}
+		
+		self::$actionInstance = $action;
 		
 		//执行action
 		$action->run ();
@@ -217,7 +246,7 @@ class AXION_APPLICATION {
 		self::$responseFormat = $response;
 		
 		//获取控制器请求方法
-		$method = AXION_REQUEST::getRequestMethod();
+		$method = AXION_REQUEST::getRequestMethod ();
 		self::$method = $method;
 		
 		//设置控制器响应模式
@@ -226,24 +255,25 @@ class AXION_APPLICATION {
 		}
 		
 		//记录程序执行数据
-		$initMessage = "Processing $controller"."Controller#".self::$action.
-					   " (for ".IP." at ".date('Y-m-d H:i:s').") [".self::$method."]"; 
-		Axion_log::log($initMessage,Axion_log::INFO,'run');
+		$initMessage = "Processing $controller" . "Controller#" . self::$action . " (for " . IP . " at " . date ( 'Y-m-d H:i:s' ) . ") [" . self::$method . "]";
+		Axion_log::log ( $initMessage, Axion_log::INFO, 'run' );
 		
 		//实例化渲染器对象
 		$render = new AXION_RENDER ( $action );
 		
-		$extOutput = ob_get_contents ();
-
+		//$extOutput = ob_get_contents ();
+		
 		//ob_end_clean ();
 		
+
 		//获取渲染后的数据
 		$output = $render->render ();
 		
-//		var_dump ( $output );
-//		
-//		var_dump ( $extOutput );
-	
+		echo $output;
+		
+		if (! file_exists ( APPLICATION_PATH . DS . 'serverInit.done' )) {
+			file_put_contents ( APPLICATION_PATH . DS . 'serverInit.done', '' );
+		}
 	}
 	
 	/**
@@ -253,6 +283,10 @@ class AXION_APPLICATION {
 	 */
 	public static function getUniqueId() {
 		return self::$uniqueId;
+	}
+	
+	public static function getActionInstance(){
+		return self::$actionInstance;
 	}
 	
 	public static function getController() {
@@ -330,7 +364,7 @@ class AXION_APPLICATION {
 			array_unshift ( $logs, $warning );
 		}
 		
-		if (IS_FIREPHP) {
+		if (IS_FIREPHP && AXION_CONFIG::get ( 'axion.debug.usefirephp' )) {
 			$fb = AXION_UTIL_FIREPHP::getInstance ( true );
 			foreach ( $logs as $v ) {
 				switch ($v ['int_lv']) {
@@ -349,7 +383,7 @@ class AXION_APPLICATION {
 				}
 			}
 		} else {
-//			P ( $logs );
+			P ( $logs );
 		}
 	}
 }

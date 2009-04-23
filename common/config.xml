@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <axion>
 	<debug>
-		<level>0</level>
-		<usefirephp>1</usefirephp>
+		<level>1</level>
+		<usefirephp>0</usefirephp>
 	</debug>
 	<connections>
 		<databases>

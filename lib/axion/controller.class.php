@@ -176,7 +176,7 @@ abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER{
 	 */
 	public function __destruct() {
 		//缓存结果集
-		if( REQUEST_METHOD == 'GET' && !is_null( $this->int_cacheKey ) )
+		if( AXION_APPLICATION::getMethod() == 'GET' && !is_null( $this->int_cacheKey ) )
 		{
 			$_arr_params = $_SERVER['PHP_SELF'];
 			$_arr_result = $this->context;
