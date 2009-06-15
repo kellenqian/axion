@@ -219,7 +219,7 @@ class Axion {
 	}
 	
 	private static function _load($fileName) {
-		echo $fileName."<br/>";
+		//echo $fileName."<br/>";/*@todo 删除本行 */
 		require_once $fileName;
 	}
 	

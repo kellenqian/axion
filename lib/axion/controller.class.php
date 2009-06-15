@@ -6,8 +6,6 @@
 abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER{
 	private $context = array();
 	private $responseTo;
-	private $int_cacheKey = null;
-	
 	
 	
 	/**
@@ -152,36 +150,13 @@ abstract class AXION_CONTROLLER implements AXION_INTERFACE_CONTROLLER{
 		return 'default run Function';
 	}
 	
-	final public function changeCachePath( $str_path )
-	{
-		AXION_APPCACHE::setPath( $str_path );
-	}//end function changeCachePath
-	
-	final public function setCache( $int_key = '' )
-	{
-		if( is_null( $int_key ) )
-			$int_key = '';
-		$this->int_cacheKey = $int_key;
-	}//end function cacheOpen
-	
-	final public function getCache( $int_key = '' )
-	{
-		$_arr_params = $_SERVER['PHP_SELF'];
-		return AXION_CACHE_APP::load( serialize( $_arr_params ) . $int_key );
-	}//end function getCache
 	
 	/**
 	 * 控制器析构函数
 	 *
 	 */
 	public function __destruct() {
-		//缓存结果集
-		if( AXION_APPLICATION::getMethod() == 'GET' && !is_null( $this->int_cacheKey ) )
-		{
-			$_arr_params = $_SERVER['PHP_SELF'];
-			$_arr_result = $this->context;
-			AXION_CACHE_APP::save( serialize( $_arr_params ) . $this->int_cacheKey, $_arr_result );
-		}//if
+	
 	}
 }
 ?>

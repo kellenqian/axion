@@ -24,6 +24,7 @@ class AXION_CACHE {
 	
 	private static function factory($handlerName){
 		$className = strtolower($handlerName);
+		/**@todo 有必要吗？直接给对应对象的详细路径即可 */
 		if(in_array($className , array('file','memcached'))){
 			$className = 'AXION_CACHE_'.$className;
 		}

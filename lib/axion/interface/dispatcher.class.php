@@ -1,5 +1,5 @@
 <?php
-interface AXION_INTERFACE_DISPATCHER{
-	public function getParams();
+interface AXION_INTERFACE_DISPATCHER {
+	public function analyse();
 }
 ?>

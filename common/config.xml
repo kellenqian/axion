@@ -39,14 +39,17 @@
 		</memcached>
 	</connections>
 	<dispatcher>
-		<class>AXION_DISPATCHER</class>
+		<class>AXION_DISPATCHER_DEFAULT</class>
 	</dispatcher>
+	<method>
+		<default>html</default>
+	</method>
+	<module>
+		<default>index</default>
+	</module>
 	<controller>
 		<default>index</default>
 	</controller>
-	<action>
-		<default>index</default>
-	</action>
 	<model>
 	</model>
 	<view>

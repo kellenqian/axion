@@ -22,6 +22,7 @@
  * @copyright techua.com
  *
  */
+
 class AXION_APPLICATION {
 	/**
 	 * 应用程序唯一码
@@ -38,18 +39,18 @@ class AXION_APPLICATION {
 	private static $actionInstance;
 	
 	/**
-	 * 当前请求控制器名
+	 * 当前请求模块名
 	 *
 	 * @var string
 	 */
-	private static $controller;
+	private static $module;
 	
 	/**
 	 * 当前请求动作名
 	 *
 	 * @var string
 	 */
-	private static $action;
+	private static $controller;
 	
 	/**
 	 * 当前请求方法类型
@@ -153,17 +154,11 @@ class AXION_APPLICATION {
 		define ( 'APP_CONTROLLER_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'controller' );
 		define ( 'APP_MODEL_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'model' );
 		define ( 'APP_TEMPLATE_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'template' );
-		define ( 'APP_ORM_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'orm' );
-		
-		/**
-		 * ORM数据表结构映射文件存储路径
-		 */
-		/** @todo 不够优美，是否回头考虑移除? */
-		define ( 'APP_ORM_MAP_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'orm' );
 		
 		/**
 		 * 创建应用程序所需的临时文件目录
 		 */
+		$serverInitDone = true;
 		if (! file_exists ( APPLICATION_PATH . DS . 'serverInit.done' )) {
 			$tmpDirs = array ('data_cache' => DATA_CACHE_PATH, 'db_cache' => DB_CACHE_PATH, 'view_cache' => VIEW_CACHE_PATH, 'code_cache' => CODE_CACHE_PATH );
 			foreach ( $tmpDirs as $v ) {
@@ -171,7 +166,9 @@ class AXION_APPLICATION {
 					AXION_UTIL_FILE::mkdir ( $v, 0755 );
 				}
 			}
+			$serverInitDone = false;
 		}
+		define ( 'IS_SERVER_INIT_DONE', $serverInitDone );
 		
 		/**
 		 * 开启SESSION支持
@@ -189,21 +186,16 @@ class AXION_APPLICATION {
 	 * 运行应用程序
 	 */
 	public function run() {
-		$dispatcherClass = AXION_CONFIG::GET ( 'axion.dispatcher.class' );
 		
-		$dispatcher = new $dispatcherClass ( );
+		$dispatcher = AXION_DISPATCHER::getInstance();
 		
-		if (! ($dispatcher instanceof AXION_INTERFACE_DISPATCHER)) {
-			throw new AXION_EXCEPTION ( '无效的调度器对象' );
-		}
+		$params = $dispatcher->analyse ();
 		
-		$params = $dispatcher->getParams ();
+		$module = $params ['module'];
 		
 		$controller = $params ['controller'];
 		
-		$action = $params ['action'];
-		
-		$appClass = $controller . '_' . $action;
+		$appClass = $module . '_' . $controller;
 		
 		if (! class_exists ( $appClass )) {
 			throw new AXION_EXCEPTION ( '无法找到控制器' );
@@ -211,9 +203,9 @@ class AXION_APPLICATION {
 		
 		define ( 'ACTION_ClASS', $appClass );
 		
-		self::$controller = $controller;
+		self::$module = $module;
 		
-		self::$action = $action;
+		self::$controller = $controller;
 		
 		/**
 		 * 合并调度后的URL参数到$_GET 与 $_REQUEST
@@ -228,16 +220,16 @@ class AXION_APPLICATION {
 		
 
 		//实例化控制器对象
-		$action = new $appClass ( );
+		$controller = new $appClass ( );
 		
-		if (! $action instanceof AXION_INTERFACE_CONTROLLER) {
+		if (! $controller instanceof AXION_INTERFACE_CONTROLLER) {
 			throw new AXION_EXCEPTION ( '非法的控制器对象' );
 		}
 		
-		self::$actionInstance = $action;
+		self::$actionInstance = $controller;
 		
 		//执行action
-		$action->run ();
+		$controller->run ();
 		
 		//获取控制器响应模式
 		$response = AXION_REQUEST::getResponseFormat ();
@@ -250,19 +242,20 @@ class AXION_APPLICATION {
 		self::$method = $method;
 		
 		//设置控制器响应模式
-		if (! $action->responseTo ()) {
-			$action->responseTo ( $response );
+		if (! $controller->responseTo ()) {
+			$controller->responseTo ( $response );
 		}
 		
 		//记录程序执行数据
-		$initMessage = "Processing $controller" . "Controller#" . self::$action . " (for " . IP . " at " . date ( 'Y-m-d H:i:s' ) . ") [" . self::$method . "]";
-		Axion_log::log ( $initMessage, Axion_log::INFO, 'run' );
+		//$initMessage = "Processing sel" . "Controller#" . self::$controller . " (for " . IP . " at " . date ( 'Y-m-d H:i:s' ) . ") [" . self::$method . "]";
+		//Axion_log::log ( $initMessage, Axion_log::INFO, 'run' );
 		
 		//实例化渲染器对象
-		$render = new AXION_RENDER ( $action );
+		$render = new AXION_RENDER ( $controller );
 		
 		//$extOutput = ob_get_contents ();
 		
+
 		//ob_end_clean ();
 		
 
@@ -271,8 +264,8 @@ class AXION_APPLICATION {
 		
 		echo $output;
 		
-		if (! file_exists ( APPLICATION_PATH . DS . 'serverInit.done' )) {
-			file_put_contents ( APPLICATION_PATH . DS . 'serverInit.done', '' );
+		if (! IS_SERVER_INIT_DONE) {
+			file_put_contents ( APPLICATION_PATH . DS . 'serverInit.done', self::$uniqueId );
 		}
 	}
 	
@@ -285,16 +278,16 @@ class AXION_APPLICATION {
 		return self::$uniqueId;
 	}
 	
-	public static function getActionInstance(){
+	public static function getActionInstance() {
 		return self::$actionInstance;
+	}
+	
+	public static function getModule() {
+		return self::$module;
 	}
 	
 	public static function getController() {
 		return self::$controller;
-	}
-	
-	public static function getAction() {
-		return self::$action;
 	}
 	
 	public static function getMethod() {
