@@ -15,7 +15,7 @@ spl_autoload_register ( array ('Axion', 'autoloadClass' ) );
  *
  */
 class Axion {
-	/**
+	/** 
 	 * 框架开始执行时间
 	 *
 	 * @var float
