@@ -74,9 +74,9 @@ class Axion {
 		define ( 'OS', DS == '\\' ? 'windows' : 'linux' );
 		
 		/**
-		 * 定义客户端浏览器版本
+		 * 定义客户端浏览器版本 @todo需要重新定义完善的浏览器获取方法
 		 */
-		$agent = strtolower ( $_SERVER ['HTTP_USER_AGENT'] );
+		$agent = isset ( $_SERVER ['HTTP_USER_AGENT'] ) ? strtolower ( $_SERVER ['HTTP_USER_AGENT'] ) : "shell";
 		
 		switch ($agent) {
 			case ( bool ) strpos ( $agent, 'msie 6' ) :
@@ -100,6 +100,9 @@ class Axion {
 			case ( bool ) strstr ( $agent, 'opera' ) :
 				$browser = 'opera';
 				break;
+			case "shell" :
+				$browser = 'cli';
+				break;
 			default :
 				$browser = 'unknow';
 		}
@@ -109,7 +112,7 @@ class Axion {
 		 * 获取客户端IP地址
 		 */
 		/* @todo 需要修改完成细致的IP获取工作 */
-		$remoteIp = $_SERVER ['REMOTE_ADDR'];
+		$remoteIp = isset ( $_SERVER ['REMOTE_ADDR'] ) ? $_SERVER ['REMOTE_ADDR'] : "127.0.0.1";
 		define ( 'IP', $remoteIp );
 		
 		/**
@@ -159,9 +162,9 @@ class Axion {
 		 */
 		if (! defined ( 'APPLICATION_PATH' )) {
 			if (IS_CLI) {
-				$pwd = $_ENV ['OLDPWD'];
+				$pwd = isset ( $_ENV ['OLDPWD'] ) ? $_ENV ['OLDPWD'] : false;
 				if (! $pwd) {
-					exit ( 'PLEASE DEFINE "APPLICATION_PATH"' );
+					exit ( 'PLEASE DEFINE "APPLICATION_PATH"' . "\n" );
 				}
 			} else {
 				$pwd = getcwd ();
@@ -183,14 +186,14 @@ class Axion {
 		self::addIncludePath ( AXION_LIB_PATH );
 		
 		/**
-		 * 加载AXION基础常量库
-		 */
-		require AXION_PATH . DS . 'common/defines.php';
-		
-		/**
 		 * 加载AXION基础函数库
 		 */
 		require AXION_PATH . DS . 'common/functions.php';
+		
+		/**
+		 * 加载AXION基础宏定义库
+		 */
+		require AXION_PATH . DS . 'common/defines.php';
 		
 		/**
 		 * 加载AXION启动所必须的类
@@ -271,7 +274,7 @@ class Axion {
 	 * @param string $package_name 类名
 	 */
 	public static function autoloadClass($package_name) {
-		$package_array = split ( '_', $package_name );
+		$package_array = explode ( '_', $package_name );
 		$file_array [0] = strtolower ( join ( DS, $package_array ) );
 		array_push ( $package_array, array_pop ( $package_array ) . '.class' );
 		$file_array [1] = strtolower ( join ( DS, $package_array ) );

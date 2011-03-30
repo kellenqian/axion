@@ -12,7 +12,22 @@
  * @param bool $bool_isBreakPoint 开启则打印完成后停止程序执行
  * @return null
  */
+
 function P($mix_target, $bool_isBreakPoint = false, $return = false) {
+	if (IS_CLI) {
+		return P_cli ( $mix_target, $bool_isBreakPoint, $return );
+	}
+	return P_web ( $mix_target, $bool_isBreakPoint, $return );
+}
+
+/**
+ * 快速打印数据(网页模式)
+ *
+ * @param mix $mix_target
+ * @param bool $bool_isBreakPoint 开启则打印完成后停止程序执行
+ * @return null
+ */
+function P_web($mix_target, $bool_isBreakPoint = false, $return = false) {
 	static $_pcount;
 	$lable = $return ? $_pcount : ++ $_pcount;
 	
@@ -23,7 +38,7 @@ function P($mix_target, $bool_isBreakPoint = false, $return = false) {
 			if ($v === null)
 				$mix_target [$k] = '(null)';
 			if (is_array ( $v ))
-				$mix_target [$k] = p ( $v, false, true );
+				$mix_target [$k] = p_web ( $v, false, true );
 		}
 	}
 	
@@ -54,13 +69,90 @@ function P($mix_target, $bool_isBreakPoint = false, $return = false) {
 		exit ( $str );
 	}
 	
-	if (IS_FIREPHP && AXION_CONFIG::get('axion.debug.usefirephp')) {
-		$str = strip_tags($str);
-		AXION_UTIL_FIREPHP::getInstance ( true )->info( $str ,'打印数据');
+	if (IS_FIREPHP && AXION_CONFIG::get ( 'axion.debug.usefirephp' )) {
+		$str = strip_tags ( $str );
+		AXION_UTIL_FIREPHP::getInstance ( true )->info ( $str, '打印数据' );
 	} else {
 		echo $str;
 	}
 	return;
+}
+
+/**
+ * 快速打印数据(命令行模式)
+ *
+ * @param mix $mix_target
+ * @param bool $bool_isBreakPoint 开启则打印完成后停止程序执行
+ * @return null
+ */
+function P_cli($mix_target, $bool_isBreakPoint = false, $return = false) {
+	static $_pcount;
+	$lable = $return ? $_pcount : ++ $_pcount;
+	
+	if (is_array ( $mix_target )) {
+		foreach ( $mix_target as $k => $v ) {
+			if (is_bool ( $v ))
+				$mix_target [$k] = $v == true ? '(bool)true' : '(bool)false';
+			if ($v === null)
+				$mix_target [$k] = '(null)';
+			if (is_array ( $v ))
+				$mix_target [$k] = p_cli ( $v, false, true );
+		}
+	}
+	
+	$result = '';
+	
+	if (is_bool ( $mix_target ))
+		$result = $mix_target == true ? '(bool)true' : '(bool)false';
+	if ($mix_target === null)
+		$result = '(null)';
+	
+	if ($return) {
+		return $mix_target;
+	}
+	
+	$output = print_r ( $mix_target, TRUE );
+	
+	$debug = debug_backtrace ();
+	
+	$str = '';
+	
+	if ($lable) {
+		$str .= 'Debug Lable:' . $lable ;
+		$str = cprint($str,COR_HIGHLIGHT,true);
+		echo $str;
+	}
+	$str  = 'In ' . $debug [0] ['file'] . ' @Line ' . $debug [0] ['line'];
+	$str  = cprint($str,COR_RED,true);
+	$output = cprint($output,COR_BLUE,true);
+	$str .= $output . $result."\n";
+	
+	if ($bool_isBreakPoint) {
+		exit ( $str );
+	}
+	
+	echo $str;
+	return;
+}
+
+/**
+ * 
+ * 在终端中打印带有颜色的文字
+ * @param string $text
+ * @param string $color
+ */
+function cprint($text, $color = "",$return = false) {
+	if (! IS_CLI) {
+		echo $text . "\n";
+		return true;
+	}
+	$str = "\033[1;$color$text\033[0m\n";
+	if($return)
+	{
+		return $str;
+	}
+	echo $str;
+	return true;
 }
 
 /**
@@ -76,7 +168,7 @@ function object2array($object) {
 		foreach ( $object as $key => $value )
 			$return [$key] = object2array ( $value );
 	} else {
-		$var = get_object_vars ( $object );
+		$var = is_object ( $object ) ? get_object_vars ( $object ) : false;
 		
 		if ($var) {
 			foreach ( $var as $key => $value )
