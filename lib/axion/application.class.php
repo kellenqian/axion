@@ -25,7 +25,7 @@
 
 class AXION_APPLICATION {
 	/**
-	 * 应用程序唯一码
+	 * 应用程序唯一码 
 	 *
 	 * @var md5 string
 	 */
