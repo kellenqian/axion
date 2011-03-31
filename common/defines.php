@@ -4,6 +4,14 @@
  */
 
 /**
+ * 渲染器预定义宏
+ */
+define("RENDER_HTML",'AXION_RENDER_HTML');
+define("RENDER_JSON",'AXION_RENDER_JS');
+define("RENDER_XML",'AXION_RENDER_XML');
+define("RENDER_RAW",'AXION_RENDER_RAW');
+
+/**
  * cli模式颜色宏定义
  */
 define("COR_RED", "31m");
