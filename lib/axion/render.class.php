@@ -5,13 +5,6 @@
  */
 class AXION_RENDER {
 	/**
-	 * 渲染器列表
-	 *
-	 * @var mix
-	 */
-	private static $validRenders = array ('html' => 'AXION_RENDER_HTML', 'xml' => 'AXION_RENDER_XML', 'js' => 'AXION_RENDER_JS', 'raw' => 'AXION_RENDER_RAW' );
-	
-	/**
 	 * 渲染器对象
 	 *
 	 * @var AXION_INTERFACE_RENDER
@@ -35,13 +28,9 @@ class AXION_RENDER {
 			throw new AXION_EXCEPTION ( '非法的控制器对象' );
 		}
 		
-		$responseTo = $appInstance->responseTo ();
+		$render = $appInstance->responseTo ();
 		
-		$this->render = isset ( self::$validRenders [$responseTo] ) ? self::$validRenders [$responseTo] : new AXION_RENDER_RAW ( );
-		
-		if (is_string ( $this->render )) {
-			$this->render = self::loadRender ( $this->render );
-		}
+		$this->render = self::loadRender ( $render );
 		
 		if (! $this->render instanceof AXION_INTERFACE_RENDER) {
 			throw new AXION_EXCEPTION ( '非法的渲染器' );
@@ -89,7 +78,7 @@ class AXION_RENDER {
 	 */
 	private static function loadRender($class) {
 		if (class_exists ( $class )) {
-			return new $class ( );
+			return new $class ();
 		}
 		
 		throw new AXION_EXCEPTION ( '没有找到对应的渲染器对象' );
