@@ -6,7 +6,7 @@ class AXION_REQUEST {
 	 * @return string
 	 */
 	public static function getResponseFormat() {
-		$response = 'html';
+		$response = RENDER_HTML;
 		
 		if (isset ( $_SERVER ['X-AXION-REQUEST-FORMAT'] )) {
 			$response = $_SERVER ['X-AXION-REQUEST-FORMAT'];
@@ -25,17 +25,21 @@ class AXION_REQUEST {
 		
 		if (isset ( $_POST ['_method'] )) {
 			$postMethod = strtoupper ( $_POST ['_method'] );
-		}else{
+		} else {
 			$postMethod = '';
 		}
 		
-		$headMethod = strtoupper ( $_SERVER ['REQUEST_METHOD'] );
+		if (! IS_CLI) {
+			$headMethod = strtoupper ( $_SERVER ['REQUEST_METHOD'] );
+		}else{
+			$headMethod = 'GET';//@todo 在CLI模式下是否需要使用一个独立的标志，而不是使用GET
+		}
 		
 		if (! in_array ( $headMethod, $_method )) {
 			return 'GET';
 		}
 		
-		if($postMethod == ''){
+		if ($postMethod == '') {
 			return $headMethod;
 		}
 		
