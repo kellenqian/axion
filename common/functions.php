@@ -57,11 +57,16 @@ function P_web($mix_target, $bool_isBreakPoint = false, $return = false) {
 	
 	$debug = debug_backtrace ();
 	
+	$debug_mode = false;
+	if (AXION_CONFIG::get ( 'axion.debug.level' ) > 0) {
+		$debug_mode = '(Debug Mode ON)';
+	}
+	
 	$str = '<pre>';
 	if ($lable) {
-		$str .= 'Debug Lable:<strong>' . $lable . '</strong><br/>';
+		$str .= 'Debug Lable:<strong>' . $lable . $debug_mode . '</strong><br/>';
 	}
-	$str .= 'In <strong>' . $debug [0] ['file'] . '</strong> @Line <strong>' . $debug [0] ['line'] . '</strong><BR/>';
+	$str .= 'In <strong>' . $debug [1] ['file'] . '</strong> @Line <strong>' . $debug [1] ['line'] . '</strong><BR/>';
 	$str .= $output . $result;
 	$str .= '</pre>';
 	
@@ -115,17 +120,22 @@ function P_cli($mix_target, $bool_isBreakPoint = false, $return = false) {
 	
 	$debug = debug_backtrace ();
 	
+	$debug_mode = false;
+	if (AXION_CONFIG::get ( 'axion.debug.level' ) > 0) {
+		$debug_mode = cprint ( '(Debug Mode ON)', COR_BLINK, true );
+	}
+	
 	$str = '';
 	
 	if ($lable) {
-		$str .= 'Debug Lable:' . $lable ;
-		$str = cprint($str,COR_HIGHLIGHT,true);
-		echo $str;
+		$str .= 'Debug Lable:' . $lable;
+		$str = cprint ( $str, COR_HIGHLIGHT, true );
+		echo $str . " " . $debug_mode . "\n";
 	}
-	$str  = 'In ' . $debug [0] ['file'] . ' @Line ' . $debug [0] ['line'];
-	$str  = cprint($str,COR_RED,true);
-	$output = cprint($output,COR_BLUE,true);
-	$str .= $output . $result."\n";
+	$str = 'In ' . $debug [1] ['file'] . ' @Line ' . $debug [1] ['line'] . "\n";
+	$str = cprint ( $str, COR_RED, true );
+	$output = cprint ( $output, COR_BLUE, true );
+	$str .= $output . $result . "\n";
 	
 	if ($bool_isBreakPoint) {
 		exit ( $str );
@@ -141,14 +151,13 @@ function P_cli($mix_target, $bool_isBreakPoint = false, $return = false) {
  * @param string $text
  * @param string $color
  */
-function cprint($text, $color = "",$return = false) {
+function cprint($text, $color = "", $return = false) {
 	if (! IS_CLI) {
-		echo $text . "\n";
+		echo $text;
 		return true;
 	}
-	$str = "\033[1;$color$text\033[0m\n";
-	if($return)
-	{
+	$str = "\033[1;$color$text\033[0m";
+	if ($return) {
 		return $str;
 	}
 	echo $str;
