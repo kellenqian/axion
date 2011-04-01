@@ -10,7 +10,7 @@ spl_autoload_register ( array ('Axion', 'autoloadClass' ) );
  * 完成框架初始化工作
  * 
  * @package AXION
- * @author kellenqian
+ * @author qwl (qianweiliang@techua.com)
  * @copyright techua.com
  *
  */
@@ -37,9 +37,9 @@ class Axion {
 	/**
 	 * 代码缓存文件名
 	 *
-	 * @var unknown_type
+	 * @var string
 	 */
-	public static $load_cache_file;
+	public static $load_cache_file = null;
 	
 	/**
 	 * 框架初始化函数
@@ -52,10 +52,10 @@ class Axion {
 		self::$startTime = microtime ( true );
 		
 		/**
-		 * 检测PHP版本，必须高于5.2.0
+		 * 检测PHP版本，必须高于5.3.0
 		 */
-		if (version_compare ( PHP_VERSION, '5.2.2', '<' ))
-			exit ( 'Axion Framework Requires PHP Version >= 5.2.2' );
+		if (version_compare ( PHP_VERSION, '5.3.0', '<' ))
+			exit ( 'Axion Framework Requires PHP Version >= 5.3.0' );
 		
 		/**
 		 * 定义自适应系统的目录分隔符
@@ -161,14 +161,7 @@ class Axion {
 		 * 定义当前应用程序所在目录
 		 */
 		if (! defined ( 'APPLICATION_PATH' )) {
-			if (IS_CLI) {
-				$pwd = isset ( $_ENV ['OLDPWD'] ) ? $_ENV ['OLDPWD'] : false;
-				if (! $pwd) {
-					exit ( 'PLEASE DEFINE "APPLICATION_PATH"' . "\n" );
-				}
-			} else {
-				$pwd = getcwd ();
-			}
+			$pwd = getcwd ();
 			define ( 'APPLICATION_PATH', $pwd );
 		}
 		
@@ -222,7 +215,7 @@ class Axion {
 	}
 	
 	private static function _load($fileName) {
-		//echo $fileName."<br/>";/*@todo 删除本行 */
+		//echo $fileName."\n";/*@todo 删除本行 */
 		require_once $fileName;
 	}
 	
@@ -231,7 +224,7 @@ class Axion {
 	 *
 	 */
 	private static function _loadCachedClass() {
-		if (AXION_CONFIG::GET ( 'axion.debug.level' ) == 1)
+		if (AXION_CONFIG::GET ( 'axion.debug.level' ) > 0)
 			return;
 		
 		if (! IS_CLI)
@@ -305,6 +298,12 @@ class Axion {
 		if (! defined ( 'APPLICATION_PATH' )) {
 			exit ();
 		}
+		
+		/** Debug 模式不存储缓存文件列表 */
+		if (AXION_CONFIG::get ( 'axion.debug.level' ) > 0) {
+			return;
+		}
+		
 		/**
 		 * 存储本次程序新加载的文件列表
 		 */

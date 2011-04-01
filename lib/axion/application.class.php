@@ -72,7 +72,7 @@ class AXION_APPLICATION {
 			return $_applicationInstance;
 		}
 		
-		$_applicationInstance = new self ( );
+		$_applicationInstance = new self ();
 		return $_applicationInstance;
 	}
 	
@@ -88,9 +88,25 @@ class AXION_APPLICATION {
 		self::$uniqueId = md5 ( APPLICATION_PATH );
 		
 		/**
+		 * 定义应用程序程序所需的临时文件目录常量
+		 */
+		define ( 'DATA_CACHE_PATH', TEMP_PATH . DS . 'axion_' . self::$uniqueId . DS . 'datacache' );
+		define ( 'DB_CACHE_PATH', TEMP_PATH . DS . 'axion_' . self::$uniqueId . DS . 'dbcache' );
+		define ( 'CODE_CACHE_PATH', TEMP_PATH . DS . 'axion_' . self::$uniqueId . DS . 'codecache' );
+		
+		/**
+		 * 定义应用程序各个库路径常量
+		 */
+		define ( 'APP_LIB_PATH', APPLICATION_PATH . DS . 'lib' );
+		define ( 'APP_CONFIG_PATH', APPLICATION_PATH . DS . 'config' );
+		define ( 'APP_CONTROLLER_PATH', APP_LIB_PATH . DS . 'controller' );
+		define ( 'APP_MODEL_PATH', APP_LIB_PATH . DS . 'model' );
+		define ( 'APP_TEMPLATE_PATH', APP_LIB_PATH . DS . 'template' );
+		
+		/**
 		 * 加载应用程序配置文件
 		 */
-		$userConfigFile = APPLICATION_PATH . DS . 'conf' . DS . 'config.xml';
+		$userConfigFile = APP_CONFIG_PATH . DS . 'config.xml';
 		if (file_exists ( $userConfigFile )) {
 			AXION_CONFIG::loadConfigFile ( $userConfigFile, 'axion', true );
 		}
@@ -98,8 +114,9 @@ class AXION_APPLICATION {
 		/**
 		 * 设置应用程序自动加载目录
 		 */
-		Axion::addIncludePath ( APPLICATION_PATH . DS . 'lib' . DS . 'controller' ); //控制器目录
-		Axion::addIncludePath ( APPLICATION_PATH . DS . 'lib' . DS . 'model' ); //模型目录
+		Axion::addIncludePath ( APP_LIB_PATH ); //应用程序程序库目录
+		Axion::addIncludePath ( APP_CONTROLLER_PATH ); //控制器目录
+		Axion::addIncludePath ( APP_MODEL_PATH ); //模型目录
 		
 
 		/**
@@ -141,21 +158,6 @@ class AXION_APPLICATION {
 		set_exception_handler ( array ($this, 'exceptionHandler' ) );
 		
 		/**
-		 * 定义应用程序程序所需的临时文件目录常量
-		 */
-		define ( 'DATA_CACHE_PATH', TEMP_PATH . DS . 'axion_' . self::$uniqueId . DS . 'datacache' );
-		define ( 'DB_CACHE_PATH', TEMP_PATH . DS . 'axion_' . self::$uniqueId . DS . 'dbcache' );
-		define ( 'VIEW_CACHE_PATH', TEMP_PATH . DS . 'axion_' . self::$uniqueId . DS . 'viewcache' );
-		define ( 'CODE_CACHE_PATH', TEMP_PATH . DS . 'axion_' . self::$uniqueId . DS . 'codecache' );
-		
-		/**
-		 * 定义应用程序各个库路径常量
-		 */
-		define ( 'APP_CONTROLLER_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'controller' );
-		define ( 'APP_MODEL_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'model' );
-		define ( 'APP_TEMPLATE_PATH', APPLICATION_PATH . DS . 'lib' . DS . 'template' );
-		
-		/**
 		 * 创建应用程序所需的临时文件目录
 		 */
 		$serverInitDone = true;
@@ -187,7 +189,7 @@ class AXION_APPLICATION {
 	 */
 	public function run() {
 		
-		$dispatcher = AXION_DISPATCHER::getInstance();
+		$dispatcher = AXION_DISPATCHER::getInstance ();
 		
 		$params = $dispatcher->analyse ();
 		
@@ -220,7 +222,7 @@ class AXION_APPLICATION {
 		
 
 		//实例化控制器对象
-		$controller = new $appClass ( );
+		$controller = new $appClass ();
 		
 		if (! $controller instanceof AXION_INTERFACE_CONTROLLER) {
 			throw new AXION_EXCEPTION ( '非法的控制器对象' );
@@ -250,6 +252,7 @@ class AXION_APPLICATION {
 		//$initMessage = "Processing sel" . "Controller#" . self::$controller . " (for " . IP . " at " . date ( 'Y-m-d H:i:s' ) . ") [" . self::$method . "]";
 		//Axion_log::log ( $initMessage, Axion_log::INFO, 'run' );
 		
+
 		//实例化渲染器对象
 		$render = new AXION_RENDER ( $controller );
 		

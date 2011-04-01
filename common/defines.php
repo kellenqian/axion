@@ -10,6 +10,7 @@ define("RENDER_HTML",'AXION_RENDER_HTML');
 define("RENDER_JSON",'AXION_RENDER_JS');
 define("RENDER_XML",'AXION_RENDER_XML');
 define("RENDER_RAW",'AXION_RENDER_RAW');
+define("RENDER_IMG",'AXION_RENDER_IMG');
 
 /**
  * cli模式颜色宏定义
